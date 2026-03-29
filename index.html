@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAIDI Master - Sistema Completo</title>
+    <title>MTC Master - MAIDI Project</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -13,206 +13,169 @@
         :root {
             --maidi-cyan: #2dd4bf;
             --maidi-gold: #fbbf24;
-            --maidi-red: #f43f5e;
             --bg-deep: #020617;
         }
 
         body { font-family: 'Space Grotesk', sans-serif; background: var(--bg-deep); color: #f1f5f9; margin: 0; overflow: hidden; }
         .ancient { font-family: 'Cinzel', serif; }
 
-        /* --- RESTAURACIÓN: EL LOGO ESFÉRICO 3D --- */
-        .spheric-container { position: relative; width: 200px; height: 200px; perspective: 1000px; display: flex; align-items: center; justify-content: center; }
-        .sphere-orbit {
-            position: absolute; width: 100%; height: 100%; border: 2px solid var(--maidi-cyan); border-radius: 50%;
-            opacity: 0.6; pointer-events: none; box-shadow: 0 0 20px rgba(45, 212, 191, 0.3);
+        /* --- EL LOGO ORIGINAL: ESTELAS DE 1/3 --- */
+        .logo-container { position: relative; width: 220px; height: 220px; display: flex; align-items: center; justify-content: center; }
+        
+        .yin-yang-core { font-size: 4.5rem; color: white; filter: drop-shadow(0 0 15px var(--maidi-cyan)); z-index: 10; }
+
+        /* Estela Exterior (1/3 de círculo) */
+        .trail-outer {
+            position: absolute; width: 100%; height: 100%;
+            border: 3px solid transparent; border-top-color: var(--maidi-cyan);
+            border-radius: 50%; animation: spin-clockwise 3s linear infinite;
         }
-        /* Órbitas encontradas para formar la esfera */
-        .orbit-x { animation: rotateX 4s linear infinite; }
-        .orbit-y { animation: rotateY 6s linear infinite; border-color: var(--maidi-gold); }
-        
-        @keyframes rotateX { 0% { transform: rotateX(70deg) rotateZ(0deg); } 100% { transform: rotateX(70deg) rotateZ(360deg); } }
-        @keyframes rotateY { 0% { transform: rotateY(70deg) rotateZ(0deg); } 100% { transform: rotateY(70deg) rotateZ(-360deg); } }
 
-        .yinyang-core { font-size: 4rem; color: white; filter: drop-shadow(0 0 15px var(--maidi-cyan)); z-index: 10; animation: pulse 3s ease-in-out infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        /* Estela Interior (1/3 de círculo) */
+        .trail-inner {
+            position: absolute; width: 70%; height: 70%;
+            border: 3px solid transparent; border-bottom-color: var(--maidi-gold);
+            border-radius: 50%; animation: spin-anticlockwise 2s linear infinite;
+        }
 
-        /* --- SISTEMA DE PANTALLAS --- */
-        .screen { position: fixed; inset: 0; background: var(--bg-deep); z-index: 100; transition: 0.8s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; }
-        .hidden-screen { opacity: 0; transform: scale(1.1); pointer-events: none; }
+        @keyframes spin-clockwise { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes spin-anticlockwise { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
 
-        /* --- UI & DOPAMINA --- */
-        .glass-card { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 28px; transition: 0.3s; }
-        .glass-card:active { transform: scale(0.97); border-color: var(--maidi-cyan); }
-        
-        .qi-warning { animation: flicker 2s infinite; color: var(--maidi-red); text-shadow: 0 0 10px var(--maidi-red); }
-        @keyframes flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        /* --- BOTÓN DE INICIO CON ESTELA EN EL BORDE --- */
+        .btn-start-container {
+            position: relative; width: 100px; height: 100px; margin-top: 40px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .btn-start-border {
+            position: absolute; inset: 0; border-radius: 50%;
+            border: 2px solid rgba(45, 212, 191, 0.1);
+            border-top: 2px solid var(--maidi-cyan);
+            animation: spin-clockwise 1.5s linear infinite;
+        }
+        .btn-start {
+            width: 80px; height: 80px; border-radius: 50%; background: rgba(45, 212, 191, 0.1);
+            border: 1px solid rgba(45, 212, 191, 0.3); color: var(--maidi-cyan);
+            font-size: 0.7rem; font-weight: bold; letter-spacing: 2px;
+            display: flex; align-items: center; justify-content: center; transition: 0.3s;
+        }
+        .btn-start:active { transform: scale(0.9); background: var(--maidi-cyan); color: black; }
 
-        #satori { position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-20px); background: black; border: 1px solid var(--maidi-cyan); padding: 12px 24px; border-radius: 50px; z-index: 2000; opacity: 0; transition: 0.4s; font-size: 0.8rem; font-weight: bold; }
-        #satori.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+        /* --- NAVEGACIÓN --- */
+        .screen { position: fixed; inset: 0; background: var(--bg-deep); transition: 0.8s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; z-index: 100; }
+        .hidden-screen { opacity: 0; pointer-events: none; transform: translateY(20px); }
+
+        /* --- TARJETAS PABELLÓN --- */
+        .glass-card {
+            background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.05); border-radius: 20px;
+            transition: 0.3s; padding: 20px;
+        }
+        .glass-card:active { border-color: var(--maidi-cyan); transform: translateX(5px); }
     </style>
 </head>
 <body class="max-w-md mx-auto h-screen relative border-x border-white/5 shadow-2xl">
 
-    <div id="satori"></div>
-
-    <!-- PANTALLA 1: SPLASH PRINCIPAL -->
-    <div id="scr-splash" class="screen items-center justify-center p-10">
-        <div class="spheric-container mb-16">
-            <div class="sphere-orbit orbit-x"></div>
-            <div class="sphere-orbit orbit-y"></div>
-            <i class="fas fa-yin-yang yinyang-core"></i>
+    <!-- PANTALLA 1: INICIO (SPLASH) -->
+    <div id="scr-splash" class="screen items-center justify-center">
+        <div class="logo-container mb-8">
+            <div class="trail-outer"></div>
+            <div class="trail-inner"></div>
+            <i class="fas fa-yin-yang yin-yang-core"></i>
         </div>
-        <h1 class="ancient text-4xl tracking-[12px] text-white">MAIDI</h1>
-        <p class="text-[10px] tracking-[6px] text-cyan-500 uppercase mt-4 opacity-70">El Despertar del Maestro</p>
-        <button onclick="showScreen('scr-pabellon')" class="mt-24 px-14 py-4 border border-cyan-500/40 rounded-full text-cyan-400 font-bold tracking-widest text-[10px] hover:bg-cyan-500/10 transition-all">SINTONIZAR</button>
+        
+        <div class="text-center">
+            <h1 class="ancient text-4xl tracking-[10px] text-white">MTC MASTER</h1>
+            <p class="text-[9px] tracking-[5px] text-cyan-500 uppercase mt-2 opacity-60">MAIDI Project</p>
+        </div>
+
+        <div class="btn-start-container" onclick="showScreen('scr-pabellon')">
+            <div class="btn-start-border"></div>
+            <button class="btn-start">INICIO</button>
+        </div>
     </div>
 
     <!-- PANTALLA 2: EL PABELLÓN (INTERMEDIA) -->
-    <div id="scr-pabellon" class="screen hidden-screen p-8 pt-20 overflow-y-auto">
-        <div class="mb-10 text-center">
-            <p id="qi-msg" class="text-[10px] font-bold tracking-widest uppercase qi-warning mb-2">Qi en Fuga (-15 XP)</p>
-            <h2 class="ancient text-3xl text-white italic">Elige tu Senda</h2>
+    <div id="scr-pabellon" class="screen hidden-screen p-8 pt-16">
+        <div class="flex justify-between items-end mb-10">
+            <div>
+                <p class="text-[10px] text-cyan-500 font-bold tracking-widest uppercase mb-1">Tu Estado</p>
+                <h2 class="ancient text-3xl text-white">Pabellón</h2>
+            </div>
+            <div class="text-right">
+                <p class="text-[10px] text-amber-500 font-bold uppercase">Rango: Iniciado</p>
+                <p class="text-[9px] text-rose-500 animate-pulse uppercase">Qi en Fuga (-5)</p>
+            </div>
         </div>
 
         <div class="space-y-4">
-            <!-- SENDA DEL GUERRERO (DOJO) -->
-            <div onclick="showScreen('scr-game')" class="glass-card p-6 flex items-center gap-6 border-l-4 border-cyan-500">
-                <div class="w-14 h-14 rounded-2xl bg-cyan-500/10 flex items-center justify-center text-2xl text-cyan-400">
-                    <i class="fas fa-bolt"></i>
-                </div>
+            <div onclick="showScreen('scr-game')" class="glass-card flex items-center gap-5 border-l-4 border-cyan-500">
+                <i class="fas fa-scroll text-2xl text-cyan-400"></i>
                 <div>
-                    <h4 class="font-bold text-white text-sm uppercase">Dojo de Combate</h4>
-                    <p class="text-[9px] text-slate-500">Duelos de diagnóstico rápido</p>
+                    <h4 class="text-sm font-bold uppercase">Misiones Diarias</h4>
+                    <p class="text-[9px] text-slate-500 italic">Entrena tu diagnóstico clínico</p>
                 </div>
             </div>
 
-            <!-- SENDA DEL SABIO (RANKING) -->
-            <div onclick="showScreen('scr-rank')" class="glass-card p-6 flex items-center gap-6 border-l-4 border-amber-500">
-                <div class="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center text-2xl text-amber-500">
-                    <i class="fas fa-crown"></i>
-                </div>
+            <div onclick="showScreen('scr-rank')" class="glass-card flex items-center gap-5 border-l-4 border-amber-500">
+                <i class="fas fa-medal text-2xl text-amber-400"></i>
                 <div>
-                    <h4 class="font-bold text-white text-sm uppercase">Altar de Maestros</h4>
-                    <p class="text-[9px] text-slate-500">Ranking global y posición</p>
+                    <h4 class="text-sm font-bold uppercase">Ranking Global</h4>
+                    <p class="text-[9px] text-slate-500 italic">Mídete contra otros maestros</p>
                 </div>
             </div>
 
-            <!-- CÁMARA DE ECOS (SOCIAL) -->
-            <div onclick="showSatori('Sincronizando con amigos...')" class="glass-card p-6 flex items-center gap-6 border-l-4 border-indigo-500">
-                <div class="w-14 h-14 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-2xl text-indigo-400">
-                    <i class="fas fa-comments"></i>
-                </div>
+            <div onclick="alert('Cámara de Ecos en desarrollo')" class="glass-card flex items-center gap-5 border-l-4 border-indigo-500">
+                <i class="fas fa-comments text-2xl text-indigo-400"></i>
                 <div>
-                    <h4 class="font-bold text-white text-sm uppercase">Cámara de Ecos</h4>
-                    <p class="text-[9px] text-slate-500">Chat y retos directos</p>
-                </div>
-            </div>
-
-            <!-- EXPLORACIÓN (BIBLIOTECA) -->
-            <div onclick="showSatori('Abriendo Atlas Técnico...')" class="glass-card p-6 flex items-center gap-6 opacity-60">
-                <div class="w-14 h-14 rounded-2xl bg-slate-500/10 flex items-center justify-center text-2xl text-slate-400">
-                    <i class="fas fa-book-medical"></i>
-                </div>
-                <div>
-                    <h4 class="font-bold text-white text-sm uppercase">Biblioteca de Jade</h4>
-                    <p class="text-[9px] text-slate-500">Exploración libre sin bloqueos</p>
+                    <h4 class="text-sm font-bold uppercase">Cámara de Ecos</h4>
+                    <p class="text-[9px] text-slate-500 italic">Chat y desafíos entre amigos</p>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- PANTALLA 3: RANKING -->
-    <div id="scr-rank" class="screen hidden-screen p-8 pt-16">
-        <div class="flex items-center gap-4 mb-10">
-            <button onclick="showScreen('scr-pabellon')" class="text-slate-400"><i class="fas fa-chevron-left"></i></button>
-            <h2 class="ancient text-2xl">Altar Global</h2>
+    <div id="scr-rank" class="screen hidden-screen p-8 pt-12">
+        <button onclick="showScreen('scr-pabellon')" class="text-slate-400 mb-8"><i class="fas fa-arrow-left mr-2"></i> VOLVER</button>
+        <h2 class="ancient text-2xl mb-6">Altar de Maestros</h2>
+        <div id="rank-content" class="space-y-3 overflow-y-auto">
+            <!-- Ranking real -->
+            <div class="glass-card p-4 flex justify-between items-center border-cyan-500/50 bg-cyan-500/5">
+                <span class="text-xs font-bold text-cyan-400">#12 YOU</span>
+                <span class="text-xs font-mono text-amber-500">1,250 QI</span>
+            </div>
+            <div class="glass-card p-4 flex justify-between items-center opacity-50">
+                <span class="text-xs font-bold text-slate-500">#13 Kenshin</span>
+                <span class="text-xs font-mono text-amber-500">1,100 QI</span>
+            </div>
         </div>
-        <div id="rank-list" class="space-y-3 overflow-y-auto"></div>
     </div>
 
-    <!-- PANTALLA 4: COMBATE (DOJO) -->
-    <div id="scr-game" class="screen hidden-screen p-8 pt-12">
-        <div class="flex justify-between items-center mb-12">
-            <button onclick="showScreen('scr-pabellon')" class="text-slate-400"><i class="fas fa-times"></i></button>
-            <div id="timer-box" class="flex-1 mx-8 h-1 bg-white/10 rounded-full overflow-hidden">
-                <div id="timer-bar" class="h-full bg-cyan-500 w-full"></div>
+    <!-- PANTALLA 4: JUEGO (TIPO COMBATE) -->
+    <div id="scr-game" class="screen hidden-screen p-6 pt-12">
+        <div class="flex justify-between items-center mb-10">
+            <button onclick="showScreen('scr-pabellon')" class="text-slate-500"><i class="fas fa-times"></i></button>
+            <div class="w-2/3 h-1 bg-white/5 rounded-full overflow-hidden">
+                <div id="timer-bar" class="h-full bg-cyan-500 w-full transition-all"></div>
             </div>
-            <p id="score-qi" class="text-xs font-bold text-amber-500">1,250 QI</p>
+            <p class="text-[10px] font-bold text-amber-500">10s</p>
         </div>
 
-        <div id="q-card" class="glass-card p-10 text-center mb-8 border-t-2 border-cyan-500">
-            <p class="text-[9px] text-cyan-400 tracking-widest uppercase mb-4">Caso Clínico</p>
-            <h3 id="q-text" class="text-lg font-bold italic leading-relaxed">¿...?</h3>
+        <div class="glass-card p-10 text-center mb-8 border-t-2 border-cyan-500">
+            <h3 class="text-lg font-bold italic leading-relaxed">"Lengua roja, sed intensa y pulso rápido."</h3>
         </div>
 
-        <div id="q-options" class="grid gap-4"></div>
+        <div class="grid gap-3">
+            <button onclick="showScreen('scr-pabellon')" class="glass-card p-4 text-xs font-bold text-left hover:bg-cyan-500/10">SÍNDROME DE CALOR EXCESO</button>
+            <button class="glass-card p-4 text-xs font-bold text-left opacity-60">DEFICIENCIA DE QI</button>
+            <button class="glass-card p-4 text-xs font-bold text-left opacity-60">ESTANCAMIENTO DE SANGRE</button>
+        </div>
     </div>
 
     <script>
-        const state = {
-            xp: 1250,
-            ranking: [
-                {n: "Zhen", xp: 5200, me: false},
-                {n: "Master_MTC", xp: 4800, me: false},
-                {n: "You (Maestro)", xp: 1250, me: true},
-                {n: "Sofia J.", xp: 900, me: false}
-            ],
-            questions: [
-                {q: "Lengua roja, sed, pulso rápido y calor en el pecho.", a: "Calor en Corazón", o: ["Calor en Corazón", "Deficiencia de Qi", "Humedad"]},
-                {q: "Edema, cara pálida y aversión al frío.", a: "Def. Yang de Riñón", o: ["Def. Yang de Riñón", "Fuego de Hígado", "Viento-Frío"]}
-            ]
-        };
-
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden-screen'));
             document.getElementById(id).classList.remove('hidden-screen');
-            if(id === 'scr-rank') renderRank();
-            if(id === 'scr-game') nextQuestion();
-        }
-
-        function showSatori(msg) {
-            const s = document.getElementById('satori');
-            s.innerText = msg; s.classList.add('visible');
-            setTimeout(() => s.classList.remove('visible'), 2000);
-        }
-
-        function renderRank() {
-            document.getElementById('rank-list').innerHTML = state.ranking.map((u, i) => `
-                <div class="glass-card p-5 flex justify-between items-center ${u.me ? 'border-cyan-500' : ''}">
-                    <span class="text-xs font-bold text-slate-500">#${i+1}</span>
-                    <p class="text-sm font-bold flex-1 ml-4">${u.n}</p>
-                    <p class="text-xs font-mono text-amber-500">${u.xp} QI</p>
-                </div>
-            `).join('');
-        }
-
-        function nextQuestion() {
-            const q = state.questions[Math.floor(Math.random()*state.questions.length)];
-            document.getElementById('q-text').innerText = `"${q.q}"`;
-            document.getElementById('q-options').innerHTML = q.o.sort(()=>Math.random()-0.5).map(opt => `
-                <button onclick="checkAns('${opt}', '${q.a}')" class="glass-card p-5 text-sm font-bold text-left hover:bg-cyan-500/10">
-                    ${opt}
-                </button>
-            `).join('');
-            
-            const bar = document.getElementById('timer-bar');
-            bar.style.transition = 'none'; bar.style.width = '100%';
-            setTimeout(() => { bar.style.transition = 'width 10s linear'; bar.style.width = '0%'; }, 50);
-        }
-
-        function checkAns(sel, corr) {
-            if(sel === corr) {
-                state.xp += 50;
-                document.getElementById('score-qi').innerText = `${state.xp} QI`;
-                document.getElementById('qi-msg').innerText = "Qi Estabilizado";
-                document.getElementById('qi-msg').classList.remove('qi-warning');
-                document.getElementById('qi-msg').classList.add('text-emerald-500');
-                showSatori("¡Armonía Lograda! +50 QI");
-                nextQuestion();
-            } else {
-                showSatori("Energía Dispersa...");
-                nextQuestion();
-            }
         }
     </script>
 </body>
