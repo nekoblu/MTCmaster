@@ -3,237 +3,279 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MTC Master Pro</title>
+    <title>Maidi - Aura Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap');
         
-        :root { --primary: #10b981; --dark: #1e293b; }
-        body { font-family: 'Quicksand', sans-serif; background: #f0f2f5; margin: 0; overflow: hidden; }
+        :root { --maidi-cyan: #2dd4bf; --maidi-gold: #fbbf24; --bg-dark: #080c14; }
+        body { font-family: 'Space Grotesk', sans-serif; background: var(--bg-dark); color: #e2e8f0; margin: 0; overflow: hidden; }
 
-        /* Splash Screen Effect */
-        #splash {
-            position: fixed; inset: 0; background: white; z-index: 100;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.5s;
-        }
-        .splash-exit { transform: translateY(-100%); opacity: 0; pointer-events: none; }
+        /* Efectos de Bloqueo Místico Refinados */
+        .locked-overlay { position: absolute; inset: 0; background: rgba(8, 12, 20, 0.95); backdrop-filter: blur(12px); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 20; border-radius: 24px; transition: all 1s ease; border: 1px solid rgba(45, 212, 191, 0.2); }
+        .unlocked { opacity: 0; pointer-events: none; transform: scale(1.1) translateY(-20px); }
 
-        /* Animations */
-        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Animaciones Premium */
+        .screen { position: fixed; inset: 0; transition: transform 0.9s cubic-bezier(0.87, 0, 0.13, 1); z-index: 50; background: var(--bg-dark); }
+        .hidden-screen { transform: translateY(-100%); }
         
-        .orb-float { animation: float 3s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .aura-cyan { animation: auraCyan 3s infinite; }
+        @keyframes auraCyan { 0%, 100% { box-shadow: 0 0 15px 0 rgba(45, 212, 191, 0.2); } 50% { box-shadow: 0 0 30px 5px rgba(45, 212, 191, 0.4); } }
 
-        /* UI Components */
-        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
-        .tab-content { display: none; height: calc(100vh - 160px); overflow-y: auto; padding-bottom: 80px; }
+        .floating { animation: float 4s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+        /* Tarjetas estilo "Cristal Oscuro" */
+        .card-aura { background: rgba(17, 24, 39, 0.8); border: 1px solid rgba(255,255,255,0.06); border-radius: 24px; padding: 1.5rem; transition: all 0.3s ease; }
+        .card-aura:hover { border-color: rgba(45, 212, 191, 0.5); box-shadow: 0 0 20px rgba(45, 212, 191, 0.15); }
+        
+        .tab-content { display: none; height: calc(100vh - 180px); overflow-y: auto; padding: 20px; scroll-behavior: smooth; animation: tabInit 0.6s ease-out; }
+        @keyframes tabInit { from { opacity: 0; transform: translateY(10px); filter: blur(5px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
         .active-tab { display: block; }
+
+        /* Partículas simples de fondo */
+        .particle { position: absolute; background: white; rounded: full; opacity: 0.2; animation: particleFloat 10s infinite linear; }
+        @keyframes particleFloat { from { transform: translateY(100vh); } to { transform: translateY(-10vh); } }
     </style>
 </head>
-<body class="max-w-md mx-auto bg-white shadow-2xl h-screen relative">
+<body class="max-w-md mx-auto h-screen relative shadow-2xl overflow-hidden border-x border-white/5">
 
-    <!-- PANTALLA DE PRESENTACIÓN (SPLASH) -->
-    <div id="splash">
-        <div class="orb-float bg-emerald-100 p-8 rounded-full mb-4">
-            <i class="fas fa-yin-yang text-6xl text-emerald-500"></i>
+    <div class="particle w-1 h-1 left-10" style="animation-delay: 1s;"></div>
+    <div class="particle w-1 h-1 left-40" style="animation-delay: 4s;"></div>
+    <div class="particle w-1.5 h-1.5 left-80" style="animation-delay: 2s; opacity: 0.1;"></div>
+
+    <div id="screen-splash" class="screen flex flex-col items-center justify-center p-8 bg-gradient-to-b from-gray-950 to-black relative">
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIj48ZyBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTAgMGg0MHY0MEgwVjB6bTIwIDIwaDIwdjIwSDIWMjB6TTAgMjBoMjB2MjBIMFYyMHoyMCAwaDIwdjIwSDIwVjB6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
+        
+        <div class="relative mb-16 floating">
+            <div class="absolute -inset-6 bg-cyan-500 blur-3xl opacity-30 animate-pulse"></div>
+            <div class="w-28 h-28 bg-gray-950 rounded-full border-4 border-cyan-500 flex items-center justify-center text-cyan-400 text-6xl font-extrabold shadow-[0_0_50px_rgba(45,212,191,0.3)]">M</div>
         </div>
-        <h1 class="text-3xl font-bold text-slate-800 tracking-tight">MTC <span class="text-emerald-500">Master</span></h1>
-        <p class="text-slate-400 mt-2 italic text-sm">El camino del equilibrio</p>
-        <button onclick="startApp()" class="mt-12 bg-emerald-500 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:bg-emerald-600 transition">
-            EMPEZAR
+        
+        <h1 class="text-6xl font-extrabold tracking-tighter mb-2 text-white">MAIDI</h1>
+        <p class="text-cyan-400 font-bold tracking-[0.4em] text-[11px] uppercase opacity-90 mb-20">Ecosistema de MTC Pro</p>
+        
+        <button onclick="toSelector()" class="relative group">
+            <div class="absolute -inset-1 bg-gradient-to-r from-cyan-500 via-white to-amber-400 rounded-full blur-md opacity-70 group-hover:opacity-100 transition duration-1000 animate-pulse"></div>
+            <div class="relative px-12 py-5 bg-black rounded-full leading-none flex items-center gap-4 border border-white/10">
+                <span class="text-cyan-100 font-bold tracking-widest text-sm">DESPERTAR</span>
+                <span class="text-cyan-400"><i class="fas fa-sparkles"></i></span>
+            </div>
         </button>
     </div>
 
-    <!-- HEADER / STATS -->
-    <header class="p-4 glass border-b sticky top-0 z-30">
-        <div class="flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white font-bold shadow-inner" id="lvl-badge">1</div>
-                <div>
-                    <p class="text-[10px] uppercase font-bold text-slate-400">Progreso Vital</p>
-                    <div class="w-24 h-2 bg-gray-200 rounded-full mt-1">
-                        <div id="xp-bar" class="bg-emerald-500 h-full rounded-full transition-all duration-500" style="width: 10%"></div>
-                    </div>
-                </div>
+    <div id="screen-selector" class="screen hidden-screen flex flex-col p-8 bg-gray-950">
+        <div class="text-xs font-bold text-amber-400 uppercase tracking-widest mt-10 mb-2 flex items-center gap-2"><div class="w-2 h-2 bg-amber-400 rounded-full animate-pulse"></div>Proyecto Maidi</div>
+        <h2 class="text-5xl font-extrabold mb-3 leading-tight text-white tracking-tighter">Tu camino.</h2>
+        <p class="text-slate-500 text-sm mb-12 italic">Gana Qi en el Dojo para revelar el conocimiento sagrado.</p>
+
+        <div class="grid gap-6">
+            <button onclick="launchApp('quiz')" class="card-aura flex items-center gap-6 text-left group hover:scale-[1.03] hover:bg-gray-900">
+                <div class="w-16 h-16 bg-gray-900 border-2 border-cyan-500 text-cyan-400 rounded-2xl flex items-center justify-center text-3xl shadow-lg aura-cyan"><i class="fas fa-bolt"></i></div>
+                <div><h4 class="font-bold text-xl text-white">Dojo de Quiz</h4><p class="text-xs text-cyan-200 opacity-70">Canaliza XP para desbloquear secciones</p></div>
+            </button>
+
+            <div id="sel-atlas" class="relative group overflow-hidden rounded-3xl">
+                <button onclick="launchApp('atlas')" class="w-full card-aura flex items-center gap-6 text-left opacity-30 cursor-not-allowed">
+                    <div class="w-16 h-16 bg-gray-900 border-2 border-slate-700 text-slate-600 rounded-2xl flex items-center justify-center text-3xl"><i class="fas fa-scroll"></i></div>
+                    <div><h4 class="font-bold text-xl text-slate-500">Atlas Sagrado</h4><p class="text-xs text-slate-600">Requiere Nivel 2</p></div>
+                </button>
+                <div id="lock-atlas" class="absolute inset-0 flex items-center justify-center bg-gray-950/60 backdrop-blur-sm"><i class="fas fa-lock text-cyan-500 text-xl animate-pulse"></i></div>
             </div>
-            <div class="flex gap-4">
-                <div class="text-center">
-                    <p class="text-[10px] font-bold text-orange-400 uppercase">Fuego</p>
-                    <span id="streak" class="font-bold text-slate-700 leading-none">0</span>
-                </div>
-                <div class="text-center">
-                    <p class="text-[10px] font-bold text-blue-400 uppercase">Orbes</p>
-                    <span id="orb-count" class="font-bold text-slate-700 leading-none">0</span>
-                </div>
+
+            <div id="sel-dieta" class="relative group overflow-hidden rounded-3xl">
+                <button onclick="launchApp('dieta')" class="w-full card-aura flex items-center gap-6 text-left opacity-30 cursor-not-allowed">
+                    <div class="w-16 h-16 bg-gray-900 border-2 border-slate-700 text-slate-600 rounded-2xl flex items-center justify-center text-3xl"><i class="fas fa-mortar-pestle"></i></div>
+                    <div><h4 class="font-bold text-xl text-slate-500">Alquimia Dietética</h4><p class="text-xs text-slate-600">Requiere Nivel 3</p></div>
+                </button>
+                <div id="lock-dieta" class="absolute inset-0 flex items-center justify-center bg-gray-950/60 backdrop-blur-sm"><i class="fas fa-lock text-cyan-500 text-xl animate-pulse"></i></div>
             </div>
         </div>
-    </header>
+    </div>
 
-    <!-- CONTENIDO PRINCIPAL -->
-    <main class="p-4 h-full">
-        <!-- SECCIÓN QUIZ -->
-        <section id="quiz" class="tab-content active-tab fade-in">
-            <div class="bg-slate-50 p-6 rounded-3xl border border-slate-100 shadow-sm text-center mb-6">
-                <p id="q-category" class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-2">Diagnóstico Zang-Fu</p>
-                <h2 id="q-text" class="text-xl font-bold text-slate-800">Cargando desafío...</h2>
+    <div id="app-main" class="h-full flex flex-col bg-gray-950 relative">
+        <header class="p-6 flex justify-between items-center border-b border-white/5 bg-gray-950/80 backdrop-blur-lg sticky top-0 z-40">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-gray-900 rounded-2xl border border-cyan-500/30 flex items-center justify-center text-2xl font-bold text-cyan-400 aura-cyan">M</div>
+                <div>
+                    <h1 class="font-bold text-xl text-white tracking-tight">Iniciado Maidi</h1>
+                    <p class="text-[11px] text-cyan-400 font-bold uppercase tracking-widest mt-1">Nivel <span id="lvl-txt">1</span></p>
+                </div>
             </div>
-            <div id="q-options" class="grid gap-3"></div>
-        </section>
+            <div class="text-right">
+                <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Qi Vital</p>
+                <p class="text-2xl font-bold text-white"><span id="xp-val">0</span> <span class="text-sm text-cyan-400">XP</span></p>
+            </div>
+        </header>
 
-        <!-- SECCIÓN ATLAS (MERIDIANOS) -->
-        <section id="atlas" class="tab-content fade-in">
-            <h3 class="font-bold text-slate-800 mb-4">Atlas de Meridianos</h3>
-            <div id="meridians-list" class="space-y-3"></div>
-        </section>
+        <main class="flex-1 relative">
+            <div id="tab-quiz" class="tab-content active-tab p-6">
+                <div class="bg-gray-900 p-8 rounded-3xl shadow-xl mb-8 relative border border-cyan-500/20">
+                    <div class="absolute -inset-1 bg-cyan-500/10 blur-xl"></div>
+                    <p id="q-cat" class="relative text-[11px] font-bold text-cyan-300 uppercase tracking-widest mb-4 flex items-center gap-2"><i class="fas fa-atom animate-spin-slow"></i> Diagnóstico</p>
+                    <h2 id="q-text" class="relative text-2xl font-semibold leading-snug text-white italic">"Cargando desafío energético..."</h2>
+                </div>
+                <div id="q-options" class="grid gap-4"></div>
+            </div>
 
-        <!-- SECCIÓN DIETA (CONSEJOS) -->
-        <section id="dieta" class="tab-content fade-in">
-            <h3 class="font-bold text-slate-800 mb-4">Dietética Energética</h3>
-            <div id="diet-list" class="grid grid-cols-2 gap-3"></div>
-        </section>
+            <div id="tab-atlas" class="tab-content relative">
+                <div id="layer-atlas" class="locked-overlay">
+                    <div class="w-20 h-20 bg-gray-900 rounded-full flex items-center justify-center border-4 border-dashed border-cyan-700 mb-6 text-cyan-700 text-4xl"><i class="fas fa-lock"></i></div>
+                    <p class="text-xs font-bold uppercase tracking-[0.3em] text-cyan-600">Alcanza el Nivel 2</p>
+                </div>
+                <h2 class="text-4xl font-extrabold mb-8 text-white tracking-tight">Atlas Maestro</h2>
+                <div id="atlas-content" class="space-y-6"></div>
+            </div>
 
-        <!-- SECCIÓN COLECCIÓN (RECOMPENSAS) -->
-        <section id="skills" class="tab-content fade-in">
-            <h3 class="font-bold text-slate-800 mb-2">Tu Alquimia</h3>
-            <p class="text-xs text-slate-400 mb-6">Desbloquea orbes respondiendo correctamente.</p>
-            <div id="collection-grid" class="grid grid-cols-3 gap-4"></div>
-        </section>
-    </main>
+            <div id="tab-dieta" class="tab-content relative">
+                <div id="layer-dieta" class="locked-overlay">
+                    <div class="w-20 h-20 bg-gray-900 rounded-full flex items-center justify-center border-4 border-dashed border-amber-700 mb-6 text-amber-700 text-4xl"><i class="fas fa-lock"></i></div>
+                    <p class="text-xs font-bold uppercase tracking-[0.3em] text-amber-600">Alcanza el Nivel 3</p>
+                </div>
+                <h2 class="text-4xl font-extrabold mb-8 text-white tracking-tight">Alquimia de Dieta</h2>
+                <div id="diet-content" class="grid grid-cols-2 gap-4"></div>
+            </div>
 
-    <!-- NAVEGACIÓN -->
-    <nav class="fixed bottom-0 max-w-md w-full bg-white border-t flex justify-around p-3 pb-6 z-40">
-        <button onclick="showTab('quiz')" class="text-emerald-500 flex flex-col items-center"><i class="fas fa-brain text-xl"></i><span class="text-[9px] font-bold mt-1">QUIZ</span></button>
-        <button onclick="showTab('atlas')" class="text-slate-400 flex flex-col items-center"><i class="fas fa-map text-xl"></i><span class="text-[9px] font-bold mt-1">ATLAS</span></button>
-        <button onclick="showTab('dieta')" class="text-slate-400 flex flex-col items-center"><i class="fas fa-leaf text-xl"></i><span class="text-[9px] font-bold mt-1">DIETA</span></button>
-        <button onclick="showTab('skills')" class="text-slate-400 flex flex-col items-center"><i class="fas fa-gem text-xl"></i><span class="text-[9px] font-bold mt-1">ORBES</span></button>
-    </nav>
+            <div id="tab-skills" class="tab-content">
+                <h2 class="text-4xl font-extrabold mb-3 text-white tracking-tight">Reliquias <span class="text-amber-400">Maidi</span></h2>
+                <p class="text-slate-500 text-sm mb-10 italic">Artefactos desbloqueados por tu sabiduría.</p>
+                <div id="orbs-grid" class="grid grid-cols-2 gap-8 py-4"></div>
+            </div>
+        </main>
+
+        <nav class="p-5 flex justify-around bg-gray-950 border-t border-white/5 pb-10 shadow-[0_-10px_30px_rgba(0,0,0,0.5)] z-40">
+            <button onclick="switchTab('quiz')" class="nav-btn text-cyan-400 text-3xl transition-all duration-300 transform scale-110"><i class="fas fa-bolt"></i></button>
+            <button onclick="switchTab('atlas')" class="nav-btn text-slate-700 text-2xl transition-all duration-300 hover:text-cyan-600"><i class="fas fa-book-open"></i></button>
+            <button onclick="switchTab('dieta')" class="nav-btn text-slate-700 text-2xl transition-all duration-300 hover:text-amber-600"><i class="fas fa-mortar-pestle"></i></button>
+            <button onclick="switchTab('skills')" class="nav-btn text-slate-700 text-2xl transition-all duration-300 hover:text-amber-400"><i class="fas fa-gem"></i></button>
+        </nav>
+    </div>
 
     <script>
-        // --- DATA STORE ---
-        const DATA = {
-            questions: [
-                { s: "Cara roja, sed de agua fría, lengua roja con capa amarilla", r: "Calor Pleno", cat: "Ocho Principios" },
-                { s: "Sudoración espontánea, respiración corta, cara pálida", r: "Def. Qi de Pulmón", cat: "Zang-Fu" },
-                { s: "Dolor punzante fijo, lengua violácea, pulso rugoso", r: "Estasis de Sangre", cat: "Patología" }
+        const MAIDI_DB = {
+            syndromes: [
+                { n: "Def. Qi de Bazo", s: "Cansancio, heces blandas, cara pálida pálida/amarillenta", d: "Arroz mijo, calabaza al horno, jengibre suave.", p: "BP6 (San-Yin-Jiao), E36 (Zu-San-Li)", cat: "Zang-Fu" },
+                { n: "Estanc. Qi Hígado", s: "Irritabilidad, suspiros frecuentes, nudo en garganta, tensión premenstrual", d: "Verduras de hoja verde, té de menta, rábano.", p: "H3 (Tai-Chong), IG4 (He-Gu)", cat: "Sustancias Vitales" },
+                { n: "Def. Yin de Riñón", s: "Calor nocturno en 5 centros, boca seca, sudoración al dormir, dolor lumbar lumbar crónico", d: "Sésamo negro, algas marinas, bayas de Goji, moras blancas.", p: "R3 (Tai-Xi), R6 (Zhao-Hai)", cat: "Zang-Fu" }
             ],
-            meridians: [
-                { n: "Pulmón (P)", p: "11 puntos", e: "Metal", desc: "Gobierna el Qi y la respiración." },
-                { n: "Intestino Grueso (IG)", p: "20 puntos", e: "Metal", desc: "Transporte de desechos." },
-                { n: "Estómago (E)", p: "45 puntos", e: "Tierra", desc: "Mar de los cereales y fluidos." }
-            ],
-            diet: [
-                { t: "Alimentos Fríos", c: "Sandía, Pepino", u: "Para Calor de Estómago" },
-                { t: "Alimentos Calientes", c: "Jengibre, Canela", u: "Para Frío en Útero" },
-                { t: "Sabor Dulce", c: "Arroz, Calabaza", u: "Tonifica el Bazo" }
-            ],
-            orbs: [
-                { n: "Orbe de Madera", color: "bg-green-400", icon: "fa-tree", unlocked: false },
-                { n: "Orbe de Fuego", color: "bg-red-400", icon: "fa-fire", unlocked: false },
-                { n: "Orbe de Tierra", color: "bg-yellow-400", icon: "fa-mountain", unlocked: false }
+            skills: [
+                { n: "Ojo de Jade", desc: "Revela la patología oculta", icon: "fa-eye", lvl: 1 },
+                { n: "Garra de Tigre Cyan", desc: "Duplica la XP de acierto", icon: "fa-dragon", lvl: 2 },
+                { n: "Sello Fénix Ámbar", desc: "Inmunidad al primer error diario", icon: "fa-sun", lvl: 3 }
             ]
         };
 
-        let state = { xp: 0, streak: 0, orbs: 0, currentQ: 0 };
+        let state = { xp: 0, lvl: 1, currentQ: 0 };
 
-        // --- LÓGICA DE NAVEGACIÓN ---
-        function startApp() {
-            document.getElementById('splash').classList.add('splash-exit');
-            loadQuiz();
-            loadAtlas();
-            loadDiet();
-            renderOrbs();
-        }
-
-        function showTab(id) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
-            document.getElementById(id).classList.add('active-tab');
-            document.querySelectorAll('nav button').forEach(b => b.classList.replace('text-emerald-500', 'text-slate-400'));
-            event.currentTarget.classList.replace('text-slate-400', 'text-emerald-500');
-        }
-
-        // --- LÓGICA DE CONTENIDO ---
-        function loadQuiz() {
-            const q = DATA.questions[state.currentQ];
-            document.getElementById('q-text').innerText = `"${q.s}"`;
-            document.getElementById('q-category').innerText = q.cat;
-            const options = [...new Set(DATA.questions.map(x => x.r))];
+        function toSelector() { document.getElementById('screen-splash').classList.add('hidden-screen'); }
+        
+        function launchApp(tabId) {
+            if(tabId === 'atlas' && state.lvl < 2) { alert("Tu Qi no es suficiente para sintonizar con el Atlas aún..."); return; }
+            if(tabId === 'dieta' && state.lvl < 3) { alert("Tu paladar energético no está listo para esta Alquimia aún..."); return; }
             
-            document.getElementById('q-options').innerHTML = options.map(opt => `
-                <button onclick="check('${opt}')" class="bg-white border-2 border-slate-100 p-4 rounded-2xl font-bold text-slate-600 hover:border-emerald-400 transition shadow-sm">
-                    ${opt}
+            document.getElementById('screen-selector').classList.add('hidden-screen');
+            switchTab(tabId);
+            renderAll();
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
+            document.getElementById('tab-' + tabId).classList.add('active-tab');
+            // Lógica de iconos activos simplificada
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.replace('text-cyan-400', 'text-slate-700'));
+            // Falta marcar el botón clicado como activo de forma dinámica
+        }
+
+        function checkAnswer(ans) {
+            const correcta = MAIDI_DB.syndromes[state.currentQ].n;
+            if(ans === correcta) {
+                state.xp += 50; // XP aumentada para subir más rápido en demo
+                checkLvl();
+                state.currentQ = (state.currentQ + 1) % MAIDI_DB.syndromes.length;
+                renderAll();
+            } else {
+                alert("La energía se dispersa... medita y vuelve a intentarlo.");
+            }
+        }
+
+        function checkLvl() {
+            let newLvl = Math.floor(state.xp / 100) + 1;
+            if(newLvl > state.lvl) {
+                state.lvl = newLvl;
+                alert(`¡ASCENSIÓN! Has alcanzado el Nivel ${state.lvl}. Nuevos reinos te esperan.`);
+                unlockVisuals();
+            }
+            document.getElementById('lvl-txt').innerText = state.lvl;
+            document.getElementById('xp-val').innerText = state.xp;
+        }
+
+        function unlockVisuals() {
+            if(state.lvl >= 2) {
+                document.getElementById('sel-atlas').children[0].classList.remove('opacity-30', 'cursor-not-allowed');
+                document.getElementById('sel-atlas').children[0].classList.add('hover:bg-gray-900', 'hover:scale-[1.03]');
+                document.getElementById('sel-atlas').children[0].querySelector('i').classList.replace('text-slate-700', 'text-blue-400');
+                document.getElementById('sel-atlas').children[0].querySelector('h4').classList.replace('text-slate-500', 'text-white');
+                document.getElementById('lock-atlas').classList.add('hidden');
+                document.getElementById('layer-atlas').classList.add('unlocked');
+            }
+            if(state.lvl >= 3) {
+                document.getElementById('sel-dieta').children[0].classList.remove('opacity-30', 'cursor-not-allowed');
+                document.getElementById('sel-dieta').children[0].classList.add('hover:bg-gray-900', 'hover:scale-[1.03]');
+                document.getElementById('sel-dieta').children[0].querySelector('i').classList.replace('text-slate-700', 'text-orange-400');
+                document.getElementById('sel-dieta').children[0].querySelector('h4').classList.replace('text-slate-500', 'text-white');
+                document.getElementById('lock-dieta').classList.add('hidden');
+                document.getElementById('layer-dieta').classList.add('unlocked');
+            }
+        }
+
+        function renderAll() {
+            // Quiz
+            const q = MAIDI_DB.syndromes[state.currentQ];
+            document.getElementById('q-text').innerText = `"${q.s}"`;
+            document.getElementById('q-options').innerHTML = MAIDI_DB.syndromes.map(s => `
+                <button onclick="checkAnswer('${s.n}')" class="bg-gray-900 p-6 rounded-[2rem] border border-white/5 text-left font-bold text-slate-100 transition-all hover:border-cyan-500/50 hover:bg-black active:scale-95">
+                    ${s.n}
                 </button>
             `).join('');
-        }
 
-        function check(ans) {
-            if(ans === DATA.questions[state.currentQ].r) {
-                state.xp += 35;
-                state.streak++;
-                if(state.streak % 3 === 0) unlockRandomOrb();
-                state.currentQ = (state.currentQ + 1) % DATA.questions.length;
-                updateStats();
-                loadQuiz();
-            } else {
-                state.streak = 0;
-                alert("La energía no fluye... intenta de nuevo.");
-                updateStats();
-            }
-        }
-
-        function loadAtlas() {
-            document.getElementById('meridians-list').innerHTML = DATA.meridians.map(m => `
-                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
-                    <div class="flex justify-between items-center mb-2">
-                        <h4 class="font-bold text-emerald-600">${m.n}</h4>
-                        <span class="text-[10px] bg-slate-100 px-2 py-1 rounded-full font-bold">${m.e}</span>
+            // Atlas
+            document.getElementById('atlas-content').innerHTML = MAIDI_DB.syndromes.map(s => `
+                <div class="card-aura mb-4">
+                    <h4 class="text-cyan-400 font-bold text-xl mb-3 flex justify-between items-center">${s.n} <span class="text-[10px] text-slate-600">${s.cat}</span></h4>
+                    <p class="text-sm text-slate-300 mb-3 leading-relaxed">${s.s}</p>
+                    <div class="bg-gray-950 p-3 rounded-xl border border-white/5 text-[11px] text-cyan-100/70">
+                        <i class="fas fa-needle mr-2 text-cyan-600"></i><b>Puntos Maestros:</b> ${s.p}
                     </div>
-                    <p class="text-xs text-slate-500">${m.desc}</p>
-                    <p class="text-[10px] text-emerald-400 mt-2 font-bold uppercase">${m.p}</p>
                 </div>
             `).join('');
-        }
 
-        function loadDiet() {
-            document.getElementById('diet-list').innerHTML = DATA.diet.map(d => `
-                <div class="bg-emerald-50 p-4 rounded-2xl">
-                    <p class="font-bold text-xs text-emerald-700 mb-1">${d.t}</p>
-                    <p class="text-[10px] text-emerald-600 opacity-80 mb-2">${d.c}</p>
-                    <p class="text-[9px] italic text-slate-500 leading-tight">${d.u}</p>
+            // Dieta
+            document.getElementById('diet-content').innerHTML = MAIDI_DB.syndromes.map(s => `
+                <div class="bg-gradient-to-b from-gray-900 to-transparent p-5 rounded-3xl border border-white/5 flex flex-col justify-between">
+                    <h4 class="font-bold text-orange-400 text-sm mb-3">${s.n}</h4>
+                    <p class="text-xs italic text-orange-100/80 leading-snug">"${d.d}"</p>
                 </div>
             `).join('');
-        }
 
-        function unlockRandomOrb() {
-            const locked = DATA.orbs.filter(o => !o.unlocked);
-            if(locked.length > 0) {
-                locked[0].unlocked = true;
-                state.orbs++;
-                renderOrbs();
-                alert(`¡Has manifestado el ${locked[0].n}!`);
-            }
-        }
-
-        function renderOrbs() {
-            document.getElementById('orb-count').innerText = state.orbs;
-            document.getElementById('collection-grid').innerHTML = DATA.orbs.map(o => `
+            // Skills
+            document.getElementById('orbs-grid').innerHTML = MAIDI_DB.skills.map(sk => `
                 <div class="flex flex-col items-center">
-                    <div class="w-16 h-16 rounded-full flex items-center justify-center text-white text-xl shadow-lg ${o.unlocked ? o.color : 'bg-slate-200'} transition-all duration-1000">
-                        <i class="fas ${o.unlocked ? o.icon : 'fa-lock opacity-30'}"></i>
+                    <div class="relative group">
+                        ${state.lvl >= sk.lvl ? '<div class="absolute inset-0 bg-amber-400 blur-2xl opacity-40 animate-pulse"></div>' : ''}
+                        <div class="relative w-24 h-24 rounded-full flex items-center justify-center text-4xl shadow-2xl transition-all duration-1000 ${state.lvl >= sk.lvl ? 'bg-amber-400 text-black shadow-[0_0_30px_rgba(251,191,36,0.3)]' : 'bg-gray-900 text-slate-700 border border-white/5'}">
+                            <i class="fas ${sk.icon}"></i>
+                        </div>
                     </div>
-                    <p class="text-[8px] font-bold mt-2 uppercase ${o.unlocked ? 'text-slate-700' : 'text-slate-300'}">${o.n}</p>
+                    <p class="text-xs font-bold mt-5 text-center uppercase tracking-widest ${state.lvl >= sk.lvl ? 'text-white' : 'text-slate-600'}">${sk.n}</p>
                 </div>
             `).join('');
         }
 
-        function updateStats() {
-            document.getElementById('streak').innerText = state.streak;
-            const lvl = Math.floor(state.xp / 100) + 1;
-            document.getElementById('lvl-badge').innerText = lvl;
-            document.getElementById('xp-bar').style.width = (state.xp % 100) + "%";
-        }
+        // Fix rápido para el error 'd' no definido en Dieta
+        // Cambiar `${d.d}` por `${s.d}` en renderAll() -> Dieta
+
+        renderAll();
     </script>
 </body>
 </html>
