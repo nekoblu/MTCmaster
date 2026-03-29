@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maidi Master - Senda Eterna</title>
+    <title>Maidi Master - Elite MTC</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -13,254 +13,208 @@
         :root {
             --maidi-cyan: #2dd4bf;
             --maidi-gold: #fbbf24;
+            --maidi-red: #f43f5e;
             --bg-deep: #020617;
-            --glass: rgba(15, 23, 42, 0.8);
         }
 
-        body { 
-            font-family: 'Space Grotesk', sans-serif; 
-            background: var(--bg-deep); 
-            color: #f1f5f9; margin: 0; overflow: hidden;
-        }
-        
+        body { font-family: 'Space Grotesk', sans-serif; background: var(--bg-deep); color: #f1f5f9; margin: 0; overflow: hidden; }
         .ancient { font-family: 'Cinzel', serif; }
 
-        /* --- EL LOGO ESFÉRICO CINÉTICO --- */
-        .spheric-logo {
-            position: relative; width: 160px; height: 160px;
-            display: flex; align-items: center; justify-content: center;
+        /* --- LOGO ESFÉRICO 3D (RESTAURADO) --- */
+        .spheric-container { position: relative; width: 140px; height: 140px; perspective: 1000px; margin: 0 auto; }
+        .sphere-orbit {
+            position: absolute; inset: 0; border: 1.5px solid var(--maidi-cyan); border-radius: 50%;
+            opacity: 0.5; pointer-events: none;
         }
-        .orbit-line {
-            position: absolute; border: 1px solid rgba(45, 212, 191, 0.3);
-            border-radius: 50%; animation: rotate linear infinite;
-        }
-        .line-1 { width: 100%; height: 40%; animation-duration: 4s; }
-        .line-2 { width: 40%; height: 100%; animation-duration: 6s; }
-        .line-3 { width: 90%; height: 90%; border-style: dashed; animation-duration: 10s; opacity: 0.1; }
+        .orbit-1 { animation: rotX 3s linear infinite; }
+        .orbit-2 { animation: rotY 5s linear infinite; border-color: var(--maidi-gold); }
         
-        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        
-        .yinyang-core {
-            font-size: 3rem; color: var(--maidi-cyan);
-            filter: drop-shadow(0 0 15px rgba(45, 212, 191, 0.6));
-            animation: pulse-glow 3s ease-in-out infinite;
-        }
-        @keyframes pulse-glow { 0%, 100% { opacity: 0.8; transform: scale(1); } 50% { opacity: 1; transform: scale(1.1); } }
+        @keyframes rotX { 0% { transform: rotateX(75deg) rotateZ(0deg); } 100% { transform: rotateX(75deg) rotateZ(360deg); } }
+        @keyframes rotY { 0% { transform: rotateY(75deg) rotateZ(0deg); } 100% { transform: rotateY(75deg) rotateZ(-360deg); } }
 
-        /* --- NAVEGACIÓN ENTRE PANTALLAS --- */
-        .screen { 
-            position: fixed; inset: 0; background: var(--bg-deep); z-index: 100;
-            display: flex; flex-direction: column; 
-            transition: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        /* --- SISTEMA DE DOPAMINA: PARTICULAS --- */
+        @keyframes success-pulse {
+            0% { box-shadow: 0 0 0 0px rgba(45, 212, 191, 0.4); }
+            100% { box-shadow: 0 0 0 50px rgba(45, 212, 191, 0); }
         }
-        .hidden-screen { opacity: 0; transform: scale(1.1); pointer-events: none; }
+        .win-flash { animation: success-pulse 0.6s ease-out; }
 
-        /* --- UI CRISTAL OSCURO & GRID --- */
-        .grid-aura {
-            position: absolute; inset: 0;
-            background-image: radial-gradient(var(--maidi-cyan) 0.5px, transparent 0.5px);
-            background-size: 30px 30px; opacity: 0.1;
-        }
-
-        .card-path {
-            background: var(--glass);
-            backdrop-filter: blur(12px);
+        /* --- RANKING ESTILO CIBERPUNK --- */
+        .rank-item {
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 24px;
-            transition: all 0.3s;
-            position: relative; overflow: hidden;
+            transition: 0.3s;
         }
-        .card-path:active { transform: scale(0.96); border-color: var(--maidi-cyan); }
-        
-        .glow-dot {
-            position: absolute; top: 0; right: 0; width: 4px; height: 4px;
-            background: var(--maidi-cyan); box-shadow: 0 0 10px var(--maidi-cyan);
-            border-radius: 50%; margin: 15px;
+        .rank-item.user {
+            border-color: var(--maidi-cyan);
+            background: rgba(45, 212, 191, 0.1);
+            box-shadow: 0 0 15px rgba(45, 212, 191, 0.1);
         }
 
-        /* --- SATORI NOTIFICATION --- */
-        #satori {
-            position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-20px);
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
-            padding: 10px 25px; border-radius: 100px; border: 1px solid var(--maidi-cyan);
-            z-index: 2000; opacity: 0; transition: 0.4s; font-size: 0.8rem; font-weight: bold;
+        /* --- ESTADO PÉRDIDA DE QI --- */
+        .qi-warning {
+            animation: flicker 2s infinite;
+            color: var(--maidi-red);
+            text-shadow: 0 0 10px var(--maidi-red);
         }
-        #satori.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+        @keyframes flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        .screen { position: fixed; inset: 0; background: var(--bg-deep); transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1); z-index: 10; }
+        .hidden-screen { opacity: 0; pointer-events: none; transform: scale(1.05); }
+
+        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
     </style>
 </head>
 <body class="max-w-md mx-auto h-screen relative border-x border-white/5 shadow-2xl">
 
-    <div id="satori"></div>
-
-    <!-- PANTALLA 1: SPLASH -->
-    <div id="scr-splash" class="screen items-center justify-center p-10">
-        <div class="grid-aura"></div>
-        <div class="spheric-logo mb-12">
-            <div class="orbit-line line-1"></div>
-            <div class="orbit-line line-2"></div>
-            <div class="orbit-line line-3"></div>
-            <i class="fas fa-yin-yang yinyang-core"></i>
-        </div>
-        <h1 class="ancient text-4xl tracking-[10px] text-white z-10">MAIDI</h1>
-        <p class="text-[9px] tracking-[6px] text-cyan-500 uppercase mt-2 opacity-60 z-10">El Despertar del Maestro</p>
-        <button onclick="toPabellon()" class="mt-24 px-12 py-4 bg-transparent border border-cyan-500/30 rounded-full text-cyan-400 font-bold tracking-widest text-[10px] hover:bg-cyan-500/10 transition-all z-10">SINTONIZAR</button>
-    </div>
-
-    <!-- PANTALLA 2: EL PABELLÓN (Hub Intermedio) -->
-    <div id="scr-pabellon" class="screen hidden-screen p-8 pt-20">
-        <div class="mb-10 text-center">
-            <p class="ancient text-amber-500 text-[10px] tracking-widest mb-2 uppercase italic">Bienvenido al Linaje</p>
-            <h2 class="ancient text-3xl text-white">Pabellón de Senda</h2>
+    <!-- PANTALLA HUB (CENTRAL) -->
+    <div id="scr-hub" class="screen p-6 pt-12 overflow-y-auto">
+        <!-- Status Bar -->
+        <div class="flex justify-between items-start mb-8">
+            <div class="spheric-container !w-16 !h-16 !m-0">
+                <div class="sphere-orbit orbit-1"></div>
+                <div class="sphere-orbit orbit-2"></div>
+                <div class="absolute inset-0 flex items-center justify-center text-xl">
+                    <i class="fas fa-yin-yang text-cyan-400"></i>
+                </div>
+            </div>
+            <div class="text-right">
+                <p id="qi-status" class="text-[10px] font-bold tracking-widest uppercase qi-warning">Qi en Fuga (-10 XP/h)</p>
+                <h2 class="ancient text-2xl text-white">Maestro <span class="text-cyan-400">You</span></h2>
+                <p class="text-[10px] text-slate-500">Rango: Practicante de Jade</p>
+            </div>
         </div>
 
-        <div class="grid gap-4 overflow-y-auto pb-10">
-            <!-- DOJO: ABIERTO -->
-            <div onclick="toAction('dojo')" class="card-path p-6 flex items-center gap-6 group">
-                <div class="glow-dot"></div>
-                <div class="w-14 h-14 rounded-2xl bg-cyan-500/10 flex items-center justify-center text-2xl text-cyan-400">
-                    <i class="fas fa-bolt"></i>
-                </div>
-                <div>
-                    <h4 class="font-bold text-white text-sm">Dojo de Casos</h4>
-                    <p class="text-[9px] text-slate-500">Cultiva tu diagnóstico rápido</p>
-                </div>
+        <!-- Secciones de Dopamina -->
+        <div class="grid grid-cols-2 gap-4 mb-8">
+            <div onclick="showScreen('scr-rank')" class="glass p-4 rounded-2xl border-b-2 border-amber-500 active:scale-95 transition-transform">
+                <i class="fas fa-chart-line text-amber-500 mb-2"></i>
+                <p class="text-[10px] text-slate-400 uppercase">Ranking</p>
+                <p class="text-lg font-bold">#14</p>
             </div>
-
-            <!-- BIBLIOTECA: ABIERTO -->
-            <div onclick="toAction('atlas')" class="card-path p-6 flex items-center gap-6">
-                <div class="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center text-2xl text-amber-500">
-                    <i class="fas fa-book-medical"></i>
-                </div>
-                <div>
-                    <h4 class="font-bold text-white text-sm">Biblioteca de Rollos</h4>
-                    <p class="text-[9px] text-slate-500">Explora la sabiduría acumulada</p>
-                </div>
+            <div onclick="showScreen('scr-game')" class="glass p-4 rounded-2xl border-b-2 border-cyan-500 active:scale-95 transition-transform">
+                <i class="fas fa-fire text-cyan-500 mb-2"></i>
+                <p class="text-[10px] text-slate-400 uppercase">Duelo Diario</p>
+                <p class="text-lg font-bold">+250 QI</p>
             </div>
+        </div>
 
-            <!-- ALQUIMIA: BLOQUEADO (Pulse) -->
-            <div onclick="showSatori('Debes alcanzar el grado Brote', '#fbbf24')" class="card-path p-6 flex items-center gap-6 opacity-40">
-                <div class="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-2xl text-slate-500">
-                    <i class="fas fa-lock animate-pulse"></i>
+        <!-- Lista de Amigos / Chat Rápido -->
+        <h3 class="ancient text-[10px] tracking-[4px] text-slate-500 mb-4 uppercase">Cámara de Ecos</h3>
+        <div class="space-y-3 mb-8">
+            <div class="flex items-center gap-4 glass p-3 rounded-xl">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-cyan-600 to-blue-400 flex items-center justify-center text-xs font-bold italic">Li</div>
+                <div class="flex-1">
+                    <p class="text-xs font-bold">Maestro Li</p>
+                    <p class="text-[9px] text-emerald-500">Online • "Duelo?"</p>
                 </div>
-                <div>
-                    <h4 class="font-bold text-slate-400 text-sm">Alquimia de Pulso</h4>
-                    <p class="text-[9px] text-slate-600">Requiere Nivel 2</p>
-                </div>
-            </div>
-
-            <!-- JARDÍN: ABIERTO -->
-            <div onclick="toAction('skills')" class="card-path p-6 flex items-center gap-6">
-                <div class="w-14 h-14 rounded-2xl bg-purple-500/10 flex items-center justify-center text-2xl text-purple-400">
-                    <i class="fas fa-gem"></i>
-                </div>
-                <div>
-                    <h4 class="font-bold text-white text-sm">Jardín de Habilidades</h4>
-                    <p class="text-[9px] text-slate-500">Tu colección de reliquias</p>
-                </div>
+                <button class="px-3 py-1 bg-cyan-500/10 text-cyan-400 text-[9px] rounded-lg border border-cyan-500/20">RETAR</button>
             </div>
         </div>
     </div>
 
-    <!-- PANTALLA 3: INTERFAZ DE ACCIÓN -->
-    <div id="scr-action" class="screen hidden-screen">
-        <header class="p-6 flex justify-between items-center border-b border-white/5">
-            <button onclick="toPabellon()" class="text-slate-400"><i class="fas fa-chevron-left"></i></button>
-            <div class="text-center">
-                <p id="action-title" class="ancient text-[10px] text-cyan-400 tracking-widest"></p>
-                <div id="xp-indicator" class="text-[9px] font-bold text-amber-500">0 QI</div>
-            </div>
-            <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-[10px] font-bold" id="action-timer">--</div>
-        </header>
+    <!-- PANTALLA RANKING GLOBAL -->
+    <div id="scr-rank" class="screen hidden-screen p-6 pt-12 flex flex-col">
+        <div class="flex items-center gap-4 mb-8">
+            <button onclick="showScreen('scr-hub')" class="text-slate-400"><i class="fas fa-arrow-left"></i></button>
+            <h2 class="ancient text-xl tracking-widest">Altar de Maestros</h2>
+        </div>
 
-        <main id="action-content" class="flex-1 p-8 overflow-y-auto">
-            <!-- El contenido dinámico se inyecta aquí -->
-        </main>
+        <div id="rank-list" class="space-y-2 flex-1 overflow-y-auto pb-10">
+            <!-- Inyectado por JS -->
+        </div>
+    </div>
+
+    <!-- PANTALLA JUEGO (DOJO) -->
+    <div id="scr-game" class="screen hidden-screen flex flex-col items-center justify-center p-8">
+        <div id="game-container" class="w-full">
+            <div class="text-center mb-10">
+                <div id="timer-bar" class="w-full h-1 bg-white/10 rounded-full overflow-hidden mb-4">
+                    <div id="timer-fill" class="h-full bg-cyan-500 w-full"></div>
+                </div>
+                <p class="text-[10px] text-cyan-500 uppercase tracking-widest">Estabiliza la energía</p>
+            </div>
+            
+            <div id="q-card" class="glass p-8 rounded-3xl border-t-2 border-cyan-500 text-center mb-8">
+                <h3 id="q-text" class="text-xl font-bold leading-relaxed italic">¿...?</h3>
+            </div>
+
+            <div id="q-options" class="grid gap-3"></div>
+        </div>
     </div>
 
     <script>
-        let state = { xp: 0, currentTab: '' };
-
-        const DB = {
-            syndromes: [
-                {q: "Paciente con tos débil, falta de aire y sudoración espontánea.", a: "Def. de Qi de Pulmón", o: ["Def. de Qi de Pulmón", "Calor en Pulmón", "Def. de Riñón"]},
-                {q: "Cefalea temporal, irritabilidad y sabor amargo en la boca.", a: "Fuego de Hígado", o: ["Fuego de Hígado", "Viento Externo", "Def. de Sangre"]}
+        const state = {
+            xp: 1250,
+            streak: 0,
+            rankData: [
+                {n: "Zhen", xp: 4500, me: false},
+                {n: "MTC_Shadow", xp: 3200, me: false},
+                {n: "You (Maestro)", xp: 1250, me: true},
+                {n: "Kenshin", xp: 900, me: false},
+                {n: "Sofia_Qi", xp: 850, me: false}
+            ],
+            questions: [
+                {q: "Lengua pálida, pulso débil y falta de aliento.", a: "Deficiencia de Qi", o: ["Deficiencia de Qi", "Estancamiento de Sangre", "Fuego de Hígado"]},
+                {q: "Dolor punzante fijo y lengua violácea.", a: "Estasis de Sangre", o: ["Estasis de Sangre", "Viento-Frío", "Humedad-Calor"]}
             ]
         };
 
-        function showSatori(msg, color = "#2dd4bf") {
-            const s = document.getElementById('satori');
-            s.innerText = msg;
-            s.style.borderColor = color;
-            s.classList.add('visible');
-            setTimeout(() => s.classList.remove('visible'), 2000);
-        }
-
-        function toPabellon() {
+        function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden-screen'));
-            document.getElementById('scr-pabellon').classList.remove('hidden-screen');
+            document.getElementById(id).classList.remove('hidden-screen');
+            if(id === 'scr-rank') renderRank();
+            if(id === 'scr-game') startGame();
         }
 
-        function toAction(type) {
-            state.currentTab = type;
-            document.getElementById('scr-pabellon').classList.add('hidden-screen');
-            document.getElementById('scr-action').classList.remove('hidden-screen');
-            renderAction(type);
+        function renderRank() {
+            const list = document.getElementById('rank-list');
+            list.innerHTML = state.rankData.map((user, i) => `
+                <div class="rank-item ${user.me ? 'user' : ''} p-4 rounded-xl flex justify-between items-center">
+                    <div class="flex items-center gap-4">
+                        <span class="text-xs font-bold text-slate-500">#${i+1}</span>
+                        <p class="text-sm font-bold ${user.me ? 'text-cyan-400' : ''}">${user.n}</p>
+                    </div>
+                    <p class="text-xs font-mono text-amber-500">${user.xp} QI</p>
+                </div>
+            `).join('');
         }
 
-        function renderAction(type) {
-            const container = document.getElementById('action-content');
-            const title = document.getElementById('action-title');
-            container.innerHTML = '';
+        function startGame() {
+            const q = state.questions[Math.floor(Math.random()*state.questions.length)];
+            document.getElementById('q-text').innerText = q.q;
+            document.getElementById('q-options').innerHTML = q.o.sort(()=>Math.random()-0.5).map(opt => `
+                <button onclick="checkAns('${opt}', '${q.a}', this)" class="glass p-4 rounded-xl text-sm font-bold hover:border-cyan-500 transition-all">
+                    ${opt}
+                </button>
+            `).join('');
             
-            if(type === 'dojo') {
-                title.innerText = "DOJO DE CASOS";
-                const q = DB.syndromes[Math.floor(Math.random()*DB.syndromes.length)];
-                container.innerHTML = `
-                    <div class="card-path p-8 mb-8 border-t-2 border-cyan-500">
-                        <p class="text-[9px] font-bold text-cyan-500 uppercase tracking-widest mb-4 italic">Caso Clínico</p>
-                        <h3 class="text-xl font-bold leading-relaxed italic">"${q.q}"</h3>
-                    </div>
-                    <div class="grid gap-3">
-                        ${q.o.map(opt => `<button onclick="checkAns('${opt}', '${q.a}')" class="card-path p-5 text-sm font-bold text-left hover:bg-cyan-500/10">${opt}</button>`).join('')}
-                    </div>
-                `;
-            } else if(type === 'atlas') {
-                title.innerText = "BIBLIOTECA";
-                container.innerHTML = `
-                    <div class="space-y-4">
-                        ${DB.syndromes.map(s => `
-                            <div class="card-path p-5 border-l-2 border-amber-500/50">
-                                <h4 class="text-amber-500 font-bold text-xs">${s.a}</h4>
-                                <p class="text-[10px] text-slate-400 mt-2 italic">${s.q}</p>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-            } else if(type === 'skills') {
-                title.innerText = "JARDÍN DE SKILLS";
-                container.innerHTML = `
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="card-path p-6 text-center opacity-50">
-                            <i class="fas fa-eye text-2xl mb-3 text-cyan-500"></i>
-                            <p class="text-[9px] font-bold uppercase">Visión de Lince</p>
-                        </div>
-                        <div class="card-path p-6 text-center opacity-20">
-                            <i class="fas fa-fire text-2xl mb-3"></i>
-                            <p class="text-[9px] font-bold uppercase">Maestro de Agujas</p>
-                        </div>
-                    </div>
-                `;
-            }
+            // Animación de barra de tiempo
+            const fill = document.getElementById('timer-fill');
+            fill.style.transition = 'none';
+            fill.style.width = '100%';
+            setTimeout(() => {
+                fill.style.transition = 'width 10s linear';
+                fill.style.width = '0%';
+            }, 50);
         }
 
-        function checkAns(sel, corr) {
+        function checkAns(sel, corr, btn) {
             if(sel === corr) {
-                state.xp += 20;
-                showSatori("+20 QI - Armonía lograda");
-                document.getElementById('xp-indicator').innerText = `${state.xp} QI`;
-                renderAction('dojo');
+                btn.classList.add('bg-cyan-500/20', 'border-cyan-400');
+                document.getElementById('q-card').classList.add('win-flash');
+                setTimeout(() => {
+                    document.getElementById('q-card').classList.remove('win-flash');
+                    state.xp += 50;
+                    state.streak++;
+                    // Si acierta, la advertencia de "Qi en Fuga" desaparece
+                    document.getElementById('qi-status').innerText = "Qi Estabilizado";
+                    document.getElementById('qi-status').className = "text-[10px] font-bold tracking-widest uppercase text-emerald-500";
+                    startGame();
+                }, 600);
             } else {
-                showSatori("Energía dispersa - Reflexiona", "#ef4444");
+                btn.classList.add('bg-rose-500/20', 'border-rose-500');
+                setTimeout(startGame, 600);
             }
         }
     </script>
