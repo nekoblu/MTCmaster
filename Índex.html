@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MTC Master - Learning App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap');
+        body { font-family: 'Outfit', sans-serif; background-color: #F3F4F6; }
+        .card-active { transform: scale(0.98); transition: 0.2s; }
+        .progress-bar { transition: width 0.5s ease-in-out; }
+        .glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="max-w-md mx-auto min-h-screen flex flex-col">
+
+    <!-- HEADER / STATS -->
+    <header class="glass sticky top-0 z-10 p-4 border-b flex justify-between items-center">
+        <div>
+            <h1 class="text-xl font-bold text-emerald-800">MTC Master</h1>
+            <p class="text-xs text-gray-500">Nivel <span id="lvl-txt">1</span> • <span id="xp-txt">0</span> XP</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="text-right">
+                <div class="flex items-center text-orange-500 font-bold">
+                    <i class="fas fa-fire mr-1"></i> <span id="streak">3</span>
+                </div>
+            </div>
+            <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700">
+                <i class="fas fa-user"></i>
+            </div>
+        </div>
+    </header>
+
+    <div class="w-full bg-gray-200 h-1.5">
+        <div id="xp-bar" class="bg-emerald-500 h-1.5 progress-bar" style="width: 10%"></div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 p-6 overflow-y-auto" id="screen-container">
+        <!-- El contenido se inyecta por JS -->
+    </main>
+
+    <!-- DISCLAIMER (Requisito Android/iOS) -->
+    <div class="px-6 py-2 text-[10px] text-gray-400 text-center italic">
+        *Uso educativo. Consulte a un profesional antes de realizar tratamientos.
+    </div>
+
+    <!-- NAVIGATION BAR -->
+    <nav class="bg-white border-t flex justify-around p-3 pb-6">
+        <button onclick="router('quiz')" class="nav-btn text-emerald-600 flex flex-col items-center">
+            <i class="fas fa-vial mb-1"></i><span class="text-[10px]">Quiz</span>
+        </button>
+        <button onclick="router('puntos')" class="nav-btn text-gray-400 flex flex-col items-center">
+            <i class="fas fa-bullseye mb-1"></i><span class="text-[10px]">Puntos</span>
+        </button>
+        <button onclick="router('mapa')" class="nav-btn text-gray-400 flex flex-col items-center">
+            <i class="fas fa-map mb-1"></i><span class="text-[10px]">Meridianos</span>
+        </button>
+    </nav>
+
+    <script>
+        // DATOS MOCK (Sustituir por tus imports de data/)
+        const patterns = {
+            "bazo_qi_deficiencia": { nombre: "Deficiencia de Qi de Bazo", sintomas: ["Fatiga", "Heces blandas", "Falta apetito"] },
+            "higado_qi_estancado": { nombre: "Estancamiento Qi de Hígado", sintomas: ["Irritabilidad", "Opresión torácica", "Suspiros"] },
+            "riñon_yin_deficiencia": { nombre: "Deficiencia de Yin de Riñón", sintomas: ["Calor en 5 centros", "Sudor nocturno"] }
+        };
+
+        const quizData = [
+            { sintomas: ["Fatiga", "Heces blandas"], respuesta: "bazo_qi_deficiencia" },
+            { sintomas: ["Irritabilidad", "Opresión torácica"], respuesta: "higado_qi_estancado" }
+        ];
+
+        // ESTADO DE LA APP
+        let state = {
+            xp: 20,
+            lvl: 1,
+            index: 0,
+            currentScreen: 'quiz'
+        };
+
+        function updateStats(points) {
+            state.xp += points;
+            if (state.xp >= 100) {
+                state.lvl++;
+                state.xp = 0;
+                alert("¡FELICIDADES! Subiste al nivel " + state.lvl);
+            }
+            document.getElementById('xp-txt').innerText = state.xp;
+            document.getElementById('lvl-txt').innerText = state.lvl;
+            document.getElementById('xp-bar').style.width = state.xp + "%";
+        }
+
+        function router(screen) {
+            state.currentScreen = screen;
+            const container = document.getElementById('screen-container');
+            
+            // Actualizar estilo botones nav
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.replace('text-emerald-600', 'text-gray-400'));
+            
+            if (screen === 'quiz') {
+                renderQuiz();
+            } else if (screen === 'puntos') {
+                container.innerHTML = `<div class='text-center mt-10 text-gray-500'><i class='fas fa-lock mb-2 text-2xl'></i><p>Desbloquea al Nivel 2</p></div>`;
+            } else {
+                container.innerHTML = `<div class='text-center mt-10'><h2 class='font-bold mb-4'>Atlas de Meridianos</h2><div class='bg-gray-300 h-64 rounded-xl flex items-center justify-center'>Visualizador de Puntos</div></div>`;
+            }
+        }
+
+        function renderQuiz() {
+            const item = quizData[state.index];
+            const container = document.getElementById('screen-container');
+            
+            container.innerHTML = `
+                <div class="animate-fadeIn">
+                    <h2 class="text-gray-500 text-sm font-semibold mb-2">DIAGNÓSTICO DIFERENCIAL</h2>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm mb-6 border border-emerald-100">
+                        <p class="text-xs text-emerald-600 font-bold mb-1 uppercase">Síntomas clave:</p>
+                        <p class="text-xl text-gray-800 leading-relaxed font-semibold">
+                            ${item.sintomas.map(s => `<span>${s}</span>`).join(" • ")}
+                        </p>
+                    </div>
+
+                    <div class="space-y-3">
+                        ${Object.keys(patterns).map(key => `
+                            <button onclick="checkAnswer('${key}')" id="btn-${key}" 
+                                class="w-full bg-white p-4 rounded-xl border border-gray-200 text-left hover:border-emerald-400 transition-all flex justify-between items-center group">
+                                <span class="font-medium text-gray-700">${patterns[key].nombre}</span>
+                                <i class="fas fa-chevron-right text-gray-300 group-hover:text-emerald-500"></i>
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div id="feedback" class="mt-6 text-center font-bold min-h-[24px]"></div>
+                </div>
+            `;
+        }
+
+        function checkAnswer(selected) {
+            const correct = quizData[state.index].respuesta;
+            const feedback = document.getElementById('feedback');
+            const btn = document.getElementById(`btn-${selected}`);
+
+            if (selected === correct) {
+                btn.classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-700');
+                feedback.innerHTML = "<span class='text-emerald-600'>¡Excelente! +10 XP</span>";
+                updateStats(10);
+            } else {
+                btn.classList.add('bg-red-50', 'border-red-500', 'text-red-700');
+                feedback.innerHTML = "<span class='text-red-500'>Sigue repasando ☯️</span>";
+            }
+
+            setTimeout(() => {
+                state.index = (state.index + 1) % quizData.length;
+                renderQuiz();
+            }, 1500);
+        }
+
+        // Inicializar
+        router('quiz');
+    </script>
+</body>
+</html>
