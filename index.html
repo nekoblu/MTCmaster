@@ -15,6 +15,7 @@
             --maidi-gold: #fbbf24;
             --maidi-red: #f43f5e;
             --bg-deep: #020617;
+            --bg-card: rgba(15, 23, 42, 0.8);
         }
 
         body { 
@@ -24,7 +25,7 @@
         }
         .ancient { font-family: 'Cinzel', serif; }
 
-        /* --- LOGO: YIN-YANG + ESTELAS 1/3 --- */
+        /* --- LOGO: YIN-YANG + ESTELAS 1/3 (PROTEGIDO) --- */
         .logo-box { position: relative; width: 220px; height: 220px; display: flex; align-items: center; justify-content: center; }
         .yin-yang { font-size: 4.5rem; color: white; filter: drop-shadow(0 0 15px var(--maidi-cyan)); z-index: 10; }
         
@@ -51,180 +52,238 @@
         }
         .btn-neon:hover { background: var(--maidi-cyan); color: var(--bg-deep); box-shadow: 0 0 30px var(--maidi-cyan); }
 
-        /* --- UI CARDS --- */
+        /* --- UI CARDS (SIN RECORTES DE TEXTO) --- */
         .path-card {
-            background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(12px);
+            background: var(--bg-card); backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 20px;
             padding: 22px; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative; width: 100%;
         }
         .path-card:active { border-color: var(--maidi-cyan); transform: scale(0.97); }
+        
+        /* Ajuste para que las respuestas se lean completas */
+        .btn-option {
+            text-align: left; font-size: 0.85rem; line-height: 1.4;
+            display: block; width: 100%; word-wrap: break-word;
+            padding: 16px 20px; margin-bottom: 12px;
+        }
 
         /* --- SCREENS --- */
         .screen { 
-            position: fixed; inset: 0; background: var(--bg-deep); 
-            transition: 0.7s ease-in-out; display: flex; flex-direction: column; z-index: 100;
+            position: fixed; inset: 0; background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+            transition: 0.6s ease-in-out; display: flex; flex-direction: column; z-index: 100;
         }
-        .hidden-screen { opacity: 0; pointer-events: none; transform: translateY(20px); }
+        .hidden-screen { opacity: 0; pointer-events: none; transform: scale(1.05); }
 
         /* --- QI BAR --- */
-        .qi-progress { width: 100%; height: 4px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; }
-        .qi-fill { height: 100%; background: var(--maidi-cyan); width: 100%; transition: linear; }
+        .qi-progress { width: 100%; height: 6px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; }
+        #t-bar { height: 100%; background: linear-gradient(90deg, var(--maidi-cyan), var(--maidi-gold)); width: 100%; }
 
-        .mystic-glow { text-shadow: 0 0 8px var(--maidi-cyan); }
+        /* --- ESTADO BLOQUEADO --- */
+        .locked { opacity: 0.5; filter: grayscale(1); pointer-events: none; }
+        .lock-icon { position: absolute; top: 15px; right: 15px; font-size: 0.7rem; color: var(--maidi-gold); }
+        .level-badge { font-size: 0.6rem; background: rgba(0,0,0,0.5); padding: 2px 8px; border-radius: 10px; border: 1px solid var(--maidi-gold); margin-top: 5px; display: inline-block; }
     </style>
 </head>
 <body class="max-w-md mx-auto h-screen relative border-x border-white/5 shadow-2xl">
 
-    <!-- PANTALLA 1: DESPERTAR -->
+    <!-- PANTALLA 1: INICIO -->
     <div id="scr-start" class="screen items-center justify-center">
         <div class="logo-box mb-12">
             <div class="trail-ext"></div>
             <div class="trail-int"></div>
             <i class="fas fa-yin-yang yin-yang"></i>
         </div>
-        <div class="text-center mb-16">
+        <div class="text-center mb-16 px-6">
             <h1 class="ancient text-4xl tracking-[10px] text-white">MTC MASTER</h1>
-            <p class="text-[10px] tracking-[5px] text-cyan-500 uppercase mt-3">MAIDI Project • Sabiduría Ancestral</p>
+            <p class="text-[10px] tracking-[5px] text-cyan-500 uppercase mt-3">MAIDI Project • El Arte del Cultivo</p>
         </div>
-        <button onclick="showScreen('scr-pabellon')" class="btn-neon">Iniciar Ascenso</button>
+        <button onclick="showScreen('scr-pabellon')" class="btn-neon">Entrar al Pabellón</button>
     </div>
 
-    <!-- PANTALLA 2: EL PABELLÓN (4 SENDEROS) -->
+    <!-- PANTALLA 2: EL PABELLÓN -->
     <div id="scr-pabellon" class="screen hidden-screen p-8 pt-16 overflow-y-auto">
         <header class="flex justify-between items-end mb-12">
             <div>
                 <h2 class="ancient text-3xl text-white tracking-widest">Pabellón</h2>
-                <p class="text-[9px] text-cyan-500 uppercase tracking-widest mt-1">Sintonía del Terapeuta</p>
+                <p class="text-[9px] text-cyan-500 uppercase tracking-widest mt-1">Sintonía del Maestro</p>
             </div>
             <div class="text-right">
-                <p id="qi-alert" class="text-[9px] text-rose-500 font-bold animate-pulse uppercase mb-1">Qi en Fuga (-10)</p>
+                <p id="qi-alert" class="text-[9px] text-rose-500 font-bold uppercase mb-1">Cuerpo en equilibrio</p>
                 <p class="text-xs font-mono text-amber-500" id="main-xp">1,250 QI</p>
             </div>
         </header>
 
         <div class="space-y-4">
-            <!-- GUERRERO -->
+            <!-- SENDA DEL GUERRERO (DESBLOQUEADA) -->
             <div onclick="initDojo()" class="path-card flex items-center gap-5 border-l-4 border-cyan-500">
-                <div class="w-12 h-12 rounded-lg bg-cyan-500/10 flex items-center justify-center text-xl text-cyan-400"><i class="fas fa-bolt"></i></div>
+                <div class="w-12 h-12 rounded-lg bg-cyan-500/10 flex items-center justify-center text-xl text-cyan-400"><i class="fas fa-fire-alt"></i></div>
                 <div>
                     <h4 class="text-sm font-bold uppercase tracking-tight text-white">Senda del Guerrero</h4>
-                    <p class="text-[10px] text-slate-500 italic">Duelos de diagnóstico y puntos comando.</p>
+                    <p class="text-[10px] text-slate-500 italic">Duelos de diagnóstico clínico.</p>
                 </div>
             </div>
-            <!-- RANKING -->
-            <div onclick="showScreen('scr-rank')" class="path-card flex items-center gap-5 border-l-4 border-amber-500">
-                <div class="w-12 h-12 rounded-lg bg-amber-500/10 flex items-center justify-center text-xl text-amber-500"><i class="fas fa-crown"></i></div>
+
+            <!-- ALTAR DE MAESTROS (BLOQUEADO NIVEL 5) -->
+            <div class="path-card flex items-center gap-5 border-l-4 border-amber-500 locked">
+                <i class="fas fa-lock lock-icon"></i>
+                <div class="w-12 h-12 rounded-lg bg-amber-500/10 flex items-center justify-center text-xl text-amber-500"><i class="fas fa-trophy"></i></div>
                 <div>
                     <h4 class="text-sm font-bold uppercase tracking-tight text-white">Altar de Maestros</h4>
-                    <p class="text-[10px] text-slate-500 italic">Ranking global y mérito espiritual.</p>
+                    <span class="level-badge text-amber-500">DESBLOQUEA EN LVL 5</span>
                 </div>
             </div>
-            <!-- ATLAS -->
-            <div onclick="showAtlas()" class="path-card flex items-center gap-5 border-l-4 border-emerald-500">
-                <div class="w-12 h-12 rounded-lg bg-emerald-500/10 flex items-center justify-center text-xl text-emerald-400"><i class="fas fa-book-medical"></i></div>
+
+            <!-- ATLAS DE JADE (BLOQUEADO NIVEL 3) -->
+            <div class="path-card flex items-center gap-5 border-l-4 border-emerald-500 locked">
+                <i class="fas fa-lock lock-icon"></i>
+                <div class="w-12 h-12 rounded-lg bg-emerald-500/10 flex items-center justify-center text-xl text-emerald-400"><i class="fas fa-scroll"></i></div>
                 <div>
                     <h4 class="text-sm font-bold uppercase tracking-tight text-white">Atlas de Jade</h4>
-                    <p class="text-[10px] text-slate-500 italic">Consulta de meridianos y dietoterapia.</p>
+                    <span class="level-badge text-emerald-500">DESBLOQUEA EN LVL 3</span>
                 </div>
             </div>
-            <!-- CHAT -->
-            <div class="path-card flex items-center gap-5 border-l-4 border-indigo-500 opacity-60">
-                <div class="w-12 h-12 rounded-lg bg-indigo-500/10 flex items-center justify-center text-xl text-indigo-400"><i class="fas fa-comments"></i></div>
+
+            <!-- CÁMARA DE ECOS (BLOQUEADO NIVEL 10) -->
+            <div class="path-card flex items-center gap-5 border-l-4 border-indigo-500 locked">
+                <i class="fas fa-lock lock-icon"></i>
+                <div class="w-12 h-12 rounded-lg bg-indigo-500/10 flex items-center justify-center text-xl text-indigo-400"><i class="fas fa-comment-dots"></i></div>
                 <div>
                     <h4 class="text-sm font-bold uppercase tracking-tight text-white">Cámara de Ecos</h4>
-                    <p class="text-[10px] text-slate-500 italic">Comunión con otros sanadores.</p>
+                    <span class="level-badge text-amber-500">DESBLOQUEA EN LVL 10</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- PANTALLA 3: DOJO (GAME) -->
+    <!-- PANTALLA 3: DOJO (SISTEMA DE PREGUNTAS MEJORADO) -->
     <div id="scr-game" class="screen hidden-screen p-8 pt-12">
-        <div class="flex justify-between items-center mb-12">
-            <button onclick="showScreen('scr-pabellon')" class="text-slate-500"><i class="fas fa-times"></i></button>
+        <div class="flex justify-between items-center mb-10">
+            <button onclick="exitDojo()" class="text-slate-500 hover:text-white transition-colors"><i class="fas fa-times text-xl"></i></button>
             <div class="flex-1 mx-8">
-                <div class="qi-progress"><div id="t-bar" class="qi-fill"></div></div>
+                <div class="qi-progress"><div id="t-bar"></div></div>
             </div>
             <p class="text-xs font-mono text-amber-500" id="game-xp">1250</p>
         </div>
-        <div class="path-card text-center mb-8 border-t-2 border-cyan-500">
-            <p class="text-[9px] text-cyan-400 uppercase tracking-widest mb-4">Caso Clínico</p>
-            <h3 id="q-text" class="text-lg font-bold italic leading-relaxed text-white">...</h3>
+        
+        <div class="path-card text-center mb-8 border-t-2 border-cyan-500 px-6">
+            <p class="text-[9px] text-cyan-400 uppercase tracking-widest mb-4">Manifestación Clínica</p>
+            <h3 id="q-text" class="text-lg font-bold italic leading-snug text-white">Cargando desafío...</h3>
         </div>
-        <div id="q-options" class="grid gap-3"></div>
-    </div>
 
-    <!-- PANTALLA 4: ATLAS -->
-    <div id="scr-atlas" class="screen hidden-screen p-8 pt-12 overflow-y-auto">
-        <button onclick="showScreen('scr-pabellon')" class="text-slate-500 mb-8"><i class="fas fa-arrow-left"></i> Volver</button>
-        <h2 class="ancient text-2xl text-white mb-6">Atlas de Jade</h2>
-        <div id="atlas-list" class="space-y-4"></div>
+        <!-- Contenedor de respuestas sin recortes -->
+        <div id="q-options" class="flex flex-col gap-0 overflow-y-auto max-h-[50vh] pr-2">
+            <!-- Las opciones se inyectan aquí -->
+        </div>
     </div>
 
     <script>
         const MTC_DATA = {
             questions: [
-                { q: "Lengua pálida, hinchada, con marcas dentales y aversión al frío.", a: "Def. de Yang de Bazo", o: ["Def. de Yang de Bazo", "Fuego de Hígado", "Calor en Sangre"] },
-                { q: "Punto de Alarma (Mu) del Pulmón situado en el primer espacio intercostal.", a: "Zhongfu (P1)", o: ["Zhongfu (P1)", "Shanyu (Ren17)", "Hegu (IG4)"] },
-                { q: "¿Qué sabor tonifica la Tierra (Bazo/Estómago) pero en exceso genera humedad?", a: "Dulce", o: ["Dulce", "Ácido", "Salado"] },
-                { q: "Pulso tenso (como cuerda de guitarra) suele indicar...", a: "Estancamiento de Qi de Hígado", o: ["Estancamiento de Qi de Hígado", "Def. de Sangre", "Humedad"] }
-            ],
-            atlas: [
-                { t: "Meridiano de Estómago", d: "45 puntos. El 'Mar de los Alimentos'. Punto clave: E36 para vitalidad." },
-                { t: "Sabor Picante (Metal)", d: "Dispersa y mueve el Qi. Útil en ataques de Viento-Frío iniciales." },
-                { t: "Diferenciación: Calor Exceso", d: "Cara roja, sed de frío, pulso rápido y lengua roja con saburra amarilla." }
+                { 
+                    q: "Paciente presenta: Cara roja, ojos inyectados en sangre, irritabilidad extrema, sabor amargo y orina oscura.", 
+                    a: "Fuego de Hígado Ascendente", 
+                    o: ["Fuego de Hígado Ascendente", "Deficiencia de Yin de Riñón con calor falso", "Humedad-Calor en Vesícula Biliar"] 
+                },
+                { 
+                    q: "Lengua pálida, hinchada con marcas dentales, cansancio, heces blandas y pulso débil.", 
+                    a: "Deficiencia de Qi de Bazo", 
+                    o: ["Deficiencia de Qi de Bazo", "Estancamiento de Qi de Hígado", "Humedad en Jiao Inferior"] 
+                },
+                { 
+                    q: "Dolor punzante fijo que empeora por la noche, lengua violácea y pulso rugoso.", 
+                    a: "Estasis de Sangre", 
+                    o: ["Estasis de Sangre", "Obstrucción por Viento-Frío", "Deficiencia de Sangre de Corazón"] 
+                },
+                { 
+                    q: "Punto de acupuntura situado a 3 cun por debajo del ombligo, tonifica el Qi original.", 
+                    a: "Guanyuan (Ren 4)", 
+                    o: ["Guanyuan (Ren 4)", "Qihai (Ren 6)", "Zhongwan (Ren 12)"] 
+                }
             ]
         };
 
         let xp = 1250;
-        let timer;
+        let timerId = null;
 
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden-screen'));
             document.getElementById(id).classList.remove('hidden-screen');
-            if(timer) clearInterval(timer);
         }
 
         function initDojo() {
             showScreen('scr-game');
-            nextQ();
+            nextQuestion();
         }
 
-        function nextQ() {
-            const q = MTC_DATA.questions[Math.floor(Math.random()*MTC_DATA.questions.length)];
-            document.getElementById('q-text').innerText = q.q;
-            const box = document.getElementById('q-options');
-            box.innerHTML = '';
-            q.o.sort(()=>Math.random()-0.5).forEach(opt => {
-                const b = document.createElement('button');
-                b.className = "path-card text-xs font-bold uppercase tracking-tighter hover:bg-cyan-500/10 text-left";
-                b.innerText = opt;
-                b.onclick = () => {
-                    if(opt === q.a) { xp += 50; document.getElementById('qi-alert').innerText="Qi Armonizado"; document.getElementById('qi-alert').className="text-[9px] text-emerald-500 font-bold uppercase mb-1"; }
-                    else { xp -= 20; document.getElementById('qi-alert').innerText="Qi en Fuga"; document.getElementById('qi-alert').className="text-[9px] text-rose-500 font-bold animate-pulse uppercase mb-1"; }
-                    updateUI(); nextQ();
-                };
-                box.appendChild(b);
+        function exitDojo() {
+            if(timerId) clearTimeout(timerId);
+            showScreen('scr-pabellon');
+        }
+
+        function nextQuestion() {
+            if(timerId) clearTimeout(timerId);
+            
+            const q = MTC_DATA.questions[Math.floor(Math.random() * MTC_DATA.questions.length)];
+            const textEl = document.getElementById('q-text');
+            const optionsBox = document.getElementById('q-options');
+
+            // Actualizar texto
+            textEl.innerText = q.q;
+            optionsBox.innerHTML = '';
+
+            // Generar opciones con clase de NO recorte
+            q.o.sort(() => Math.random() - 0.5).forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "path-card btn-option hover:border-cyan-500/50 hover:bg-cyan-500/5 transition-all mb-4";
+                btn.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <span class="flex-1">${opt}</span>
+                        <i class="fas fa-chevron-right text-[10px] text-slate-700 ml-2"></i>
+                    </div>
+                `;
+                
+                // LÓGICA DE RESPUESTA: Al hacer click, comprueba y salta a la siguiente
+                btn.onclick = () => handleAnswer(opt, q.a);
+                optionsBox.appendChild(btn);
             });
+
             startTimer();
+        }
+
+        function handleAnswer(selected, correct) {
+            const alertEl = document.getElementById('qi-alert');
+            
+            if(selected === correct) {
+                xp += 50;
+                alertEl.innerText = "Qi Armonizado (+50)";
+                alertEl.className = "text-[9px] text-emerald-500 font-bold uppercase mb-1";
+            } else {
+                xp -= 20;
+                alertEl.innerText = "Qi en Fuga (-20)";
+                alertEl.className = "text-[9px] text-rose-500 font-bold animate-pulse uppercase mb-1";
+            }
+            
+            updateUI();
+            // Salto inmediato a la siguiente pregunta
+            nextQuestion();
         }
 
         function startTimer() {
             const bar = document.getElementById('t-bar');
-            bar.style.transition = 'none'; bar.style.width = '100%';
-            setTimeout(() => { bar.style.transition = 'width 10s linear'; bar.style.width = '0%'; }, 50);
-            timer = setTimeout(nextQ, 10000);
-        }
-
-        function showAtlas() {
-            showScreen('scr-atlas');
-            const list = document.getElementById('atlas-list');
-            list.innerHTML = MTC_DATA.atlas.map(i => `
-                <div class="path-card">
-                    <h4 class="text-cyan-400 font-bold text-sm uppercase mb-2">${i.t}</h4>
-                    <p class="text-[11px] text-slate-400 leading-relaxed">${i.d}</p>
-                </div>
-            `).join('');
+            bar.style.transition = 'none';
+            bar.style.width = '100%';
+            
+            // Forzar reflow para reiniciar la animación
+            void bar.offsetWidth; 
+            
+            bar.style.transition = 'width 12s linear';
+            bar.style.width = '0%';
+            
+            // Si el tiempo se acaba, pasa a la siguiente automáticamente
+            timerId = setTimeout(() => {
+                nextQuestion();
+            }, 12000);
         }
 
         function updateUI() {
