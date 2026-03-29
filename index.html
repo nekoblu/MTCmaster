@@ -3,279 +3,261 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maidi - Aura Edition</title>
+    <title>Máster MTC - Maidi Project</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Quicksand:wght@300;500;700&display=swap');
         
-        :root { --maidi-cyan: #2dd4bf; --maidi-gold: #fbbf24; --bg-dark: #080c14; }
-        body { font-family: 'Space Grotesk', sans-serif; background: var(--bg-dark); color: #e2e8f0; margin: 0; overflow: hidden; }
+        :root { --accent: #2dd4bf; --gold: #fbbf24; --deep: #05080a; }
+        body { font-family: 'Quicksand', sans-serif; background: var(--deep); color: #e2e8f0; margin: 0; overflow: hidden; }
+        h1, h2, .ancient-font { font-family: 'Cinzel', serif; }
 
-        /* Efectos de Bloqueo Místico Refinados */
-        .locked-overlay { position: absolute; inset: 0; background: rgba(8, 12, 20, 0.95); backdrop-filter: blur(12px); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 20; border-radius: 24px; transition: all 1s ease; border: 1px solid rgba(45, 212, 191, 0.2); }
-        .unlocked { opacity: 0; pointer-events: none; transform: scale(1.1) translateY(-20px); }
+        /* Estructura de Pantallas - Corregido */
+        .screen { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 50; background: var(--deep); transition: all 0.8s cubic-bezier(0.7, 0, 0.3, 1); }
+        .hidden-screen { transform: scale(1.1); opacity: 0; pointer-events: none; visibility: hidden; }
 
-        /* Animaciones Premium */
-        .screen { position: fixed; inset: 0; transition: transform 0.9s cubic-bezier(0.87, 0, 0.13, 1); z-index: 50; background: var(--bg-dark); }
-        .hidden-screen { transform: translateY(-100%); }
+        /* Icono de Nivel Evolutivo */
+        .lvl-icon { width: 50px; height: 50px; background: rgba(45, 212, 191, 0.1); border: 1px solid var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--gold); box-shadow: 0 0 15px rgba(45, 212, 191, 0.3); }
+
+        /* Logo Ancestral */
+        .maidi-symbol { position: relative; width: 120px; height: 120px; display: flex; align-items: center; justify-content: center; }
+        .ring { position: absolute; inset: 0; border: 2px solid var(--accent); border-radius: 50%; border-top-color: transparent; animation: spin 10s linear infinite; }
+        .ring-inner { position: absolute; inset: 15px; border: 1px solid var(--gold); border-radius: 50%; border-bottom-color: transparent; animation: spin 6s linear reverse infinite; }
         
-        .aura-cyan { animation: auraCyan 3s infinite; }
-        @keyframes auraCyan { 0%, 100% { box-shadow: 0 0 15px 0 rgba(45, 212, 191, 0.2); } 50% { box-shadow: 0 0 30px 5px rgba(45, 212, 191, 0.4); } }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        .floating { animation: float 4s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        /* Tarjetas y UI */
+        .glass-card { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.05); border-radius: 28px; backdrop-filter: blur(10px); }
+        .tab-content { display: none; height: calc(100vh - 180px); overflow-y: auto; padding: 20px; }
+        .active-tab { display: block; animation: slideUp 0.5s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Tarjetas estilo "Cristal Oscuro" */
-        .card-aura { background: rgba(17, 24, 39, 0.8); border: 1px solid rgba(255,255,255,0.06); border-radius: 24px; padding: 1.5rem; transition: all 0.3s ease; }
-        .card-aura:hover { border-color: rgba(45, 212, 191, 0.5); box-shadow: 0 0 20px rgba(45, 212, 191, 0.15); }
-        
-        .tab-content { display: none; height: calc(100vh - 180px); overflow-y: auto; padding: 20px; scroll-behavior: smooth; animation: tabInit 0.6s ease-out; }
-        @keyframes tabInit { from { opacity: 0; transform: translateY(10px); filter: blur(5px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
-        .active-tab { display: block; }
-
-        /* Partículas simples de fondo */
-        .particle { position: absolute; background: white; rounded: full; opacity: 0.2; animation: particleFloat 10s infinite linear; }
-        @keyframes particleFloat { from { transform: translateY(100vh); } to { transform: translateY(-10vh); } }
+        .btn-ancient { background: linear-gradient(135deg, #0f172a 0%, #020617 100%); border: 1px solid rgba(45, 212, 191, 0.4); border-radius: 20px; transition: all 0.3s; }
+        .btn-ancient:active { transform: scale(0.95); border-color: var(--gold); }
     </style>
 </head>
 <body class="max-w-md mx-auto h-screen relative shadow-2xl overflow-hidden border-x border-white/5">
 
-    <div class="particle w-1 h-1 left-10" style="animation-delay: 1s;"></div>
-    <div class="particle w-1 h-1 left-40" style="animation-delay: 4s;"></div>
-    <div class="particle w-1.5 h-1.5 left-80" style="animation-delay: 2s; opacity: 0.1;"></div>
-
-    <div id="screen-splash" class="screen flex flex-col items-center justify-center p-8 bg-gradient-to-b from-gray-950 to-black relative">
-        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIj48ZyBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTAgMGg0MHY0MEgwVjB6bTIwIDIwaDIwdjIwSDIWMjB6TTAgMjBoMjB2MjBIMFYyMHoyMCAwaDIwdjIwSDIwVjB6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
-        
-        <div class="relative mb-16 floating">
-            <div class="absolute -inset-6 bg-cyan-500 blur-3xl opacity-30 animate-pulse"></div>
-            <div class="w-28 h-28 bg-gray-950 rounded-full border-4 border-cyan-500 flex items-center justify-center text-cyan-400 text-6xl font-extrabold shadow-[0_0_50px_rgba(45,212,191,0.3)]">M</div>
+    <!-- 1. PANTALLA DE BIENVENIDA (LOGO ANCESTRAL) -->
+    <div id="screen-splash" class="screen flex flex-col items-center justify-center p-8">
+        <div class="maidi-symbol mb-8">
+            <div class="ring"></div>
+            <div class="ring-inner"></div>
+            <i class="fas fa-yin-yang text-4xl text-white"></i>
         </div>
+        <h1 class="text-3xl font-bold tracking-[4px] text-white text-center">MÁSTER MTC</h1>
+        <div class="h-[1px] w-24 bg-gradient-to-r from-transparent via-cyan-500 to-transparent my-4"></div>
+        <p class="ancient-font text-[10px] text-amber-400 tracking-[3px] uppercase">Maidi Project • Wisdom Path</p>
         
-        <h1 class="text-6xl font-extrabold tracking-tighter mb-2 text-white">MAIDI</h1>
-        <p class="text-cyan-400 font-bold tracking-[0.4em] text-[11px] uppercase opacity-90 mb-20">Ecosistema de MTC Pro</p>
-        
-        <button onclick="toSelector()" class="relative group">
-            <div class="absolute -inset-1 bg-gradient-to-r from-cyan-500 via-white to-amber-400 rounded-full blur-md opacity-70 group-hover:opacity-100 transition duration-1000 animate-pulse"></div>
-            <div class="relative px-12 py-5 bg-black rounded-full leading-none flex items-center gap-4 border border-white/10">
-                <span class="text-cyan-100 font-bold tracking-widest text-sm">DESPERTAR</span>
-                <span class="text-cyan-400"><i class="fas fa-sparkles"></i></span>
+        <button onclick="toSelector()" class="mt-24 group relative">
+            <div class="absolute -inset-4 bg-cyan-500/20 blur-xl rounded-full"></div>
+            <div class="relative px-12 py-4 btn-ancient text-cyan-400 font-bold tracking-widest text-sm flex items-center gap-3">
+                INICIAR DESPERTAR <i class="fas fa-scroll"></i>
             </div>
         </button>
     </div>
 
-    <div id="screen-selector" class="screen hidden-screen flex flex-col p-8 bg-gray-950">
-        <div class="text-xs font-bold text-amber-400 uppercase tracking-widest mt-10 mb-2 flex items-center gap-2"><div class="w-2 h-2 bg-amber-400 rounded-full animate-pulse"></div>Proyecto Maidi</div>
-        <h2 class="text-5xl font-extrabold mb-3 leading-tight text-white tracking-tighter">Tu camino.</h2>
-        <p class="text-slate-500 text-sm mb-12 italic">Gana Qi en el Dojo para revelar el conocimiento sagrado.</p>
+    <!-- 2. SELECTOR DE CAMINO (INTERMEDIO) -->
+    <div id="screen-selector" class="screen hidden-screen flex flex-col p-8 bg-[#020408]">
+        <div class="mt-10">
+            <p class="ancient-font text-amber-500 text-xs tracking-widest mb-2">MAIDI ECOSYSTEM</p>
+            <h2 class="text-4xl font-bold text-white mb-10">Escoge tu <br><span class="text-cyan-400">Disciplina</span></h2>
+        </div>
 
-        <div class="grid gap-6">
-            <button onclick="launchApp('quiz')" class="card-aura flex items-center gap-6 text-left group hover:scale-[1.03] hover:bg-gray-900">
-                <div class="w-16 h-16 bg-gray-900 border-2 border-cyan-500 text-cyan-400 rounded-2xl flex items-center justify-center text-3xl shadow-lg aura-cyan"><i class="fas fa-bolt"></i></div>
-                <div><h4 class="font-bold text-xl text-white">Dojo de Quiz</h4><p class="text-xs text-cyan-200 opacity-70">Canaliza XP para desbloquear secciones</p></div>
+        <div class="space-y-6">
+            <button onclick="launchApp('quiz')" class="w-full glass-card p-6 flex items-center gap-6 text-left border-l-4 border-l-cyan-500">
+                <div class="text-3xl text-cyan-400"><i class="fas fa-leaf"></i></div>
+                <div><h4 class="font-bold text-white">Dojo de Casos</h4><p class="text-xs text-slate-500">Gana experiencia para ascender</p></div>
             </button>
 
-            <div id="sel-atlas" class="relative group overflow-hidden rounded-3xl">
-                <button onclick="launchApp('atlas')" class="w-full card-aura flex items-center gap-6 text-left opacity-30 cursor-not-allowed">
-                    <div class="w-16 h-16 bg-gray-900 border-2 border-slate-700 text-slate-600 rounded-2xl flex items-center justify-center text-3xl"><i class="fas fa-scroll"></i></div>
-                    <div><h4 class="font-bold text-xl text-slate-500">Atlas Sagrado</h4><p class="text-xs text-slate-600">Requiere Nivel 2</p></div>
-                </button>
-                <div id="lock-atlas" class="absolute inset-0 flex items-center justify-center bg-gray-950/60 backdrop-blur-sm"><i class="fas fa-lock text-cyan-500 text-xl animate-pulse"></i></div>
-            </div>
+            <button id="btn-atlas" onclick="launchApp('atlas')" class="w-full glass-card p-6 flex items-center gap-6 text-left opacity-40 transition-all">
+                <div class="text-3xl text-slate-600" id="icon-atlas"><i class="fas fa-lock"></i></div>
+                <div><h4 class="font-bold text-slate-400" id="txt-atlas">Atlas Sagrado</h4><p class="text-xs text-slate-600">Requiere Nivel 2 (Brote)</p></div>
+            </button>
 
-            <div id="sel-dieta" class="relative group overflow-hidden rounded-3xl">
-                <button onclick="launchApp('dieta')" class="w-full card-aura flex items-center gap-6 text-left opacity-30 cursor-not-allowed">
-                    <div class="w-16 h-16 bg-gray-900 border-2 border-slate-700 text-slate-600 rounded-2xl flex items-center justify-center text-3xl"><i class="fas fa-mortar-pestle"></i></div>
-                    <div><h4 class="font-bold text-xl text-slate-500">Alquimia Dietética</h4><p class="text-xs text-slate-600">Requiere Nivel 3</p></div>
-                </button>
-                <div id="lock-dieta" class="absolute inset-0 flex items-center justify-center bg-gray-950/60 backdrop-blur-sm"><i class="fas fa-lock text-cyan-500 text-xl animate-pulse"></i></div>
-            </div>
+            <button id="btn-dieta" onclick="launchApp('dieta')" class="w-full glass-card p-6 flex items-center gap-6 text-left opacity-40 transition-all">
+                <div class="text-3xl text-slate-600" id="icon-dieta"><i class="fas fa-lock"></i></div>
+                <div><h4 class="font-bold text-slate-400" id="txt-dieta">Alquimia Dietética</h4><p class="text-xs text-slate-600">Requiere Nivel 3 (Flor)</p></div>
+            </button>
         </div>
     </div>
 
-    <div id="app-main" class="h-full flex flex-col bg-gray-950 relative">
-        <header class="p-6 flex justify-between items-center border-b border-white/5 bg-gray-950/80 backdrop-blur-lg sticky top-0 z-40">
+    <!-- 3. APLICACIÓN PRINCIPAL -->
+    <div id="app-main" class="h-full flex flex-col relative">
+        <!-- HEADER DINÁMICO -->
+        <header class="p-6 border-b border-white/5 bg-black/40 backdrop-blur-md flex justify-between items-center sticky top-0 z-30">
             <div class="flex items-center gap-4">
-                <div class="w-14 h-14 bg-gray-900 rounded-2xl border border-cyan-500/30 flex items-center justify-center text-2xl font-bold text-cyan-400 aura-cyan">M</div>
+                <div id="level-icon-container" class="lvl-icon">
+                    <i class="fas fa-seedling" id="lvl-visual"></i>
+                </div>
                 <div>
-                    <h1 class="font-bold text-xl text-white tracking-tight">Iniciado Maidi</h1>
-                    <p class="text-[11px] text-cyan-400 font-bold uppercase tracking-widest mt-1">Nivel <span id="lvl-txt">1</span></p>
+                    <h1 class="ancient-font text-xs font-bold text-amber-500 tracking-widest">MÁSTER MTC</h1>
+                    <p class="text-[10px] text-slate-400 uppercase font-bold tracking-tighter" id="lvl-label">Nivel 1: Semilla</p>
                 </div>
             </div>
             <div class="text-right">
-                <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Qi Vital</p>
-                <p class="text-2xl font-bold text-white"><span id="xp-val">0</span> <span class="text-sm text-cyan-400">XP</span></p>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-bold text-cyan-400" id="xp-display">0</span>
+                    <div class="w-12 h-1 bg-white/10 rounded-full overflow-hidden"><div id="xp-bar" class="h-full bg-cyan-500 transition-all" style="width: 0%"></div></div>
+                </div>
+                <p class="text-[9px] text-slate-500 uppercase font-bold mt-1 tracking-widest">Qi Acumulado</p>
             </div>
         </header>
 
-        <main class="flex-1 relative">
+        <main class="flex-1 relative overflow-hidden">
+            <!-- PESTAÑA QUIZ -->
             <div id="tab-quiz" class="tab-content active-tab p-6">
-                <div class="bg-gray-900 p-8 rounded-3xl shadow-xl mb-8 relative border border-cyan-500/20">
-                    <div class="absolute -inset-1 bg-cyan-500/10 blur-xl"></div>
-                    <p id="q-cat" class="relative text-[11px] font-bold text-cyan-300 uppercase tracking-widest mb-4 flex items-center gap-2"><i class="fas fa-atom animate-spin-slow"></i> Diagnóstico</p>
-                    <h2 id="q-text" class="relative text-2xl font-semibold leading-snug text-white italic">"Cargando desafío energético..."</h2>
+                <div class="glass-card p-8 mb-8 border-t-2 border-t-cyan-500 relative overflow-hidden">
+                    <div class="absolute -right-10 -bottom-10 text-white/5 text-9xl ancient-font">Qi</div>
+                    <p id="q-cat" class="text-[10px] font-bold text-cyan-400 uppercase tracking-[3px] mb-4 italic">Simbología Zang-Fu</p>
+                    <h2 id="q-text" class="text-xl font-bold leading-relaxed text-white">...</h2>
                 </div>
                 <div id="q-options" class="grid gap-4"></div>
             </div>
 
-            <div id="tab-atlas" class="tab-content relative">
-                <div id="layer-atlas" class="locked-overlay">
-                    <div class="w-20 h-20 bg-gray-900 rounded-full flex items-center justify-center border-4 border-dashed border-cyan-700 mb-6 text-cyan-700 text-4xl"><i class="fas fa-lock"></i></div>
-                    <p class="text-xs font-bold uppercase tracking-[0.3em] text-cyan-600">Alcanza el Nivel 2</p>
-                </div>
-                <h2 class="text-4xl font-extrabold mb-8 text-white tracking-tight">Atlas Maestro</h2>
-                <div id="atlas-content" class="space-y-6"></div>
+            <!-- PESTAÑA ATLAS -->
+            <div id="tab-atlas" class="tab-content p-6">
+                <h2 class="text-3xl font-bold mb-6 text-white">Atlas Maestro</h2>
+                <div id="atlas-list" class="space-y-4"></div>
             </div>
 
-            <div id="tab-dieta" class="tab-content relative">
-                <div id="layer-dieta" class="locked-overlay">
-                    <div class="w-20 h-20 bg-gray-900 rounded-full flex items-center justify-center border-4 border-dashed border-amber-700 mb-6 text-amber-700 text-4xl"><i class="fas fa-lock"></i></div>
-                    <p class="text-xs font-bold uppercase tracking-[0.3em] text-amber-600">Alcanza el Nivel 3</p>
-                </div>
-                <h2 class="text-4xl font-extrabold mb-8 text-white tracking-tight">Alquimia de Dieta</h2>
-                <div id="diet-content" class="grid grid-cols-2 gap-4"></div>
+            <!-- PESTAÑA DIETA -->
+            <div id="tab-dieta" class="tab-content p-6">
+                <h2 class="text-3xl font-bold mb-6 text-white">Dietética Sagrada</h2>
+                <div id="diet-list" class="grid grid-cols-2 gap-4"></div>
             </div>
 
-            <div id="tab-skills" class="tab-content">
-                <h2 class="text-4xl font-extrabold mb-3 text-white tracking-tight">Reliquias <span class="text-amber-400">Maidi</span></h2>
-                <p class="text-slate-500 text-sm mb-10 italic">Artefactos desbloqueados por tu sabiduría.</p>
-                <div id="orbs-grid" class="grid grid-cols-2 gap-8 py-4"></div>
+            <!-- PESTAÑA SKILLS -->
+            <div id="tab-skills" class="tab-content p-6">
+                <h2 class="text-3xl font-bold mb-6 text-white text-center">Evolución Interna</h2>
+                <div id="skills-grid" class="grid grid-cols-2 gap-6"></div>
             </div>
         </main>
 
-        <nav class="p-5 flex justify-around bg-gray-950 border-t border-white/5 pb-10 shadow-[0_-10px_30px_rgba(0,0,0,0.5)] z-40">
-            <button onclick="switchTab('quiz')" class="nav-btn text-cyan-400 text-3xl transition-all duration-300 transform scale-110"><i class="fas fa-bolt"></i></button>
-            <button onclick="switchTab('atlas')" class="nav-btn text-slate-700 text-2xl transition-all duration-300 hover:text-cyan-600"><i class="fas fa-book-open"></i></button>
-            <button onclick="switchTab('dieta')" class="nav-btn text-slate-700 text-2xl transition-all duration-300 hover:text-amber-600"><i class="fas fa-mortar-pestle"></i></button>
-            <button onclick="switchTab('skills')" class="nav-btn text-slate-700 text-2xl transition-all duration-300 hover:text-amber-400"><i class="fas fa-gem"></i></button>
+        <!-- NAVEGACIÓN -->
+        <nav class="bg-black/80 border-t border-white/5 flex justify-around p-4 pb-8 z-40">
+            <button onclick="switchTab('quiz')" class="nav-btn text-cyan-400 text-xl"><i class="fas fa-scroll"></i></button>
+            <button onclick="switchTab('atlas')" class="nav-btn text-slate-600 text-xl"><i class="fas fa-map-marked-alt"></i></button>
+            <button onclick="switchTab('dieta')" class="nav-btn text-slate-600 text-xl"><i class="fas fa-mortar-pestle"></i></button>
+            <button onclick="switchTab('skills')" class="nav-btn text-slate-600 text-xl"><i class="fas fa-hamsa"></i></button>
         </nav>
     </div>
 
     <script>
-        const MAIDI_DB = {
+        const DB = {
             syndromes: [
-                { n: "Def. Qi de Bazo", s: "Cansancio, heces blandas, cara pálida pálida/amarillenta", d: "Arroz mijo, calabaza al horno, jengibre suave.", p: "BP6 (San-Yin-Jiao), E36 (Zu-San-Li)", cat: "Zang-Fu" },
-                { n: "Estanc. Qi Hígado", s: "Irritabilidad, suspiros frecuentes, nudo en garganta, tensión premenstrual", d: "Verduras de hoja verde, té de menta, rábano.", p: "H3 (Tai-Chong), IG4 (He-Gu)", cat: "Sustancias Vitales" },
-                { n: "Def. Yin de Riñón", s: "Calor nocturno en 5 centros, boca seca, sudoración al dormir, dolor lumbar lumbar crónico", d: "Sésamo negro, algas marinas, bayas de Goji, moras blancas.", p: "R3 (Tai-Xi), R6 (Zhao-Hai)", cat: "Zang-Fu" }
+                { n: "Deficiencia Qi Pulmón", s: "Disnea, voz débil, sudoración diurna, cansancio", p: "P7, P9, V13", d: "Avena, jengibre, higos" },
+                { n: "Fuego de Hígado", s: "Ojos rojos, sabor amargo, cefalea temporal, ira", p: "H2, H3, VB20", d: "Té de crisantemo, espinacas" },
+                { n: "Humedad en Bazo", s: "Heces pastosas, pesadez, náuseas, lengua saburral", p: "BP9, BP6, V20", d: "Adzuki, calabaza, mijo" }
             ],
-            skills: [
-                { n: "Ojo de Jade", desc: "Revela la patología oculta", icon: "fa-eye", lvl: 1 },
-                { n: "Garra de Tigre Cyan", desc: "Duplica la XP de acierto", icon: "fa-dragon", lvl: 2 },
-                { n: "Sello Fénix Ámbar", desc: "Inmunidad al primer error diario", icon: "fa-sun", lvl: 3 }
+            levels: [
+                { lvl: 1, name: "Semilla", icon: "fa-seedling" },
+                { lvl: 2, name: "Brote", icon: "fa-leaf" },
+                { lvl: 3, name: "Flor de Loto", icon: "fa-spa" },
+                { lvl: 4, name: "Maestro Árbol", icon: "fa-tree" }
             ]
         };
 
-        let state = { xp: 0, lvl: 1, currentQ: 0 };
+        let state = { xp: 0, currentLvl: 1, qIdx: 0 };
 
-        function toSelector() { document.getElementById('screen-splash').classList.add('hidden-screen'); }
-        
-        function launchApp(tabId) {
-            if(tabId === 'atlas' && state.lvl < 2) { alert("Tu Qi no es suficiente para sintonizar con el Atlas aún..."); return; }
-            if(tabId === 'dieta' && state.lvl < 3) { alert("Tu paladar energético no está listo para esta Alquimia aún..."); return; }
+        // TRANSICIONES CORREGIDAS
+        function toSelector() {
+            document.getElementById('screen-splash').classList.add('hidden-screen');
+            document.getElementById('screen-selector').classList.remove('hidden-screen');
+        }
+
+        function launchApp(tab) {
+            if(tab === 'atlas' && state.currentLvl < 2) return alert("Debes alcanzar el nivel Brote");
+            if(tab === 'dieta' && state.currentLvl < 3) return alert("Debes alcanzar el nivel Flor");
             
             document.getElementById('screen-selector').classList.add('hidden-screen');
-            switchTab(tabId);
-            renderAll();
+            switchTab(tab);
+            renderQuiz();
+            renderAtlas();
+            renderDieta();
         }
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
             document.getElementById('tab-' + tabId).classList.add('active-tab');
-            // Lógica de iconos activos simplificada
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.replace('text-cyan-400', 'text-slate-700'));
-            // Falta marcar el botón clicado como activo de forma dinámica
         }
 
-        function checkAnswer(ans) {
-            const correcta = MAIDI_DB.syndromes[state.currentQ].n;
-            if(ans === correcta) {
-                state.xp += 50; // XP aumentada para subir más rápido en demo
-                checkLvl();
-                state.currentQ = (state.currentQ + 1) % MAIDI_DB.syndromes.length;
-                renderAll();
-            } else {
-                alert("La energía se dispersa... medita y vuelve a intentarlo.");
-            }
-        }
-
-        function checkLvl() {
-            let newLvl = Math.floor(state.xp / 100) + 1;
-            if(newLvl > state.lvl) {
-                state.lvl = newLvl;
-                alert(`¡ASCENSIÓN! Has alcanzado el Nivel ${state.lvl}. Nuevos reinos te esperan.`);
-                unlockVisuals();
-            }
-            document.getElementById('lvl-txt').innerText = state.lvl;
-            document.getElementById('xp-val').innerText = state.xp;
-        }
-
-        function unlockVisuals() {
-            if(state.lvl >= 2) {
-                document.getElementById('sel-atlas').children[0].classList.remove('opacity-30', 'cursor-not-allowed');
-                document.getElementById('sel-atlas').children[0].classList.add('hover:bg-gray-900', 'hover:scale-[1.03]');
-                document.getElementById('sel-atlas').children[0].querySelector('i').classList.replace('text-slate-700', 'text-blue-400');
-                document.getElementById('sel-atlas').children[0].querySelector('h4').classList.replace('text-slate-500', 'text-white');
-                document.getElementById('lock-atlas').classList.add('hidden');
-                document.getElementById('layer-atlas').classList.add('unlocked');
-            }
-            if(state.lvl >= 3) {
-                document.getElementById('sel-dieta').children[0].classList.remove('opacity-30', 'cursor-not-allowed');
-                document.getElementById('sel-dieta').children[0].classList.add('hover:bg-gray-900', 'hover:scale-[1.03]');
-                document.getElementById('sel-dieta').children[0].querySelector('i').classList.replace('text-slate-700', 'text-orange-400');
-                document.getElementById('sel-dieta').children[0].querySelector('h4').classList.replace('text-slate-500', 'text-white');
-                document.getElementById('lock-dieta').classList.add('hidden');
-                document.getElementById('layer-dieta').classList.add('unlocked');
-            }
-        }
-
-        function renderAll() {
-            // Quiz
-            const q = MAIDI_DB.syndromes[state.currentQ];
+        function renderQuiz() {
+            const q = DB.syndromes[state.qIdx];
             document.getElementById('q-text').innerText = `"${q.s}"`;
-            document.getElementById('q-options').innerHTML = MAIDI_DB.syndromes.map(s => `
-                <button onclick="checkAnswer('${s.n}')" class="bg-gray-900 p-6 rounded-[2rem] border border-white/5 text-left font-bold text-slate-100 transition-all hover:border-cyan-500/50 hover:bg-black active:scale-95">
+            document.getElementById('q-options').innerHTML = DB.syndromes.map(s => `
+                <button onclick="check('${s.n}')" class="btn-ancient p-5 text-left text-sm font-bold text-slate-300">
                     ${s.n}
                 </button>
             `).join('');
+        }
 
-            // Atlas
-            document.getElementById('atlas-content').innerHTML = MAIDI_DB.syndromes.map(s => `
-                <div class="card-aura mb-4">
-                    <h4 class="text-cyan-400 font-bold text-xl mb-3 flex justify-between items-center">${s.n} <span class="text-[10px] text-slate-600">${s.cat}</span></h4>
-                    <p class="text-sm text-slate-300 mb-3 leading-relaxed">${s.s}</p>
-                    <div class="bg-gray-950 p-3 rounded-xl border border-white/5 text-[11px] text-cyan-100/70">
-                        <i class="fas fa-needle mr-2 text-cyan-600"></i><b>Puntos Maestros:</b> ${s.p}
-                    </div>
-                </div>
-            `).join('');
+        function check(ans) {
+            if(ans === DB.syndromes[state.qIdx].n) {
+                state.xp += 40;
+                state.qIdx = (state.qIdx + 1) % DB.syndromes.length;
+                updateProgress();
+                renderQuiz();
+            } else {
+                alert("La energía no es correcta. Escucha el pulso.");
+            }
+        }
 
-            // Dieta
-            document.getElementById('diet-content').innerHTML = MAIDI_DB.syndromes.map(s => `
-                <div class="bg-gradient-to-b from-gray-900 to-transparent p-5 rounded-3xl border border-white/5 flex flex-col justify-between">
-                    <h4 class="font-bold text-orange-400 text-sm mb-3">${s.n}</h4>
-                    <p class="text-xs italic text-orange-100/80 leading-snug">"${d.d}"</p>
-                </div>
-            `).join('');
+        function updateProgress() {
+            const xpDisplay = document.getElementById('xp-display');
+            const xpBar = document.getElementById('xp-bar');
+            xpDisplay.innerText = state.xp;
+            xpBar.style.width = (state.xp % 100) + "%";
 
-            // Skills
-            document.getElementById('orbs-grid').innerHTML = MAIDI_DB.skills.map(sk => `
-                <div class="flex flex-col items-center">
-                    <div class="relative group">
-                        ${state.lvl >= sk.lvl ? '<div class="absolute inset-0 bg-amber-400 blur-2xl opacity-40 animate-pulse"></div>' : ''}
-                        <div class="relative w-24 h-24 rounded-full flex items-center justify-center text-4xl shadow-2xl transition-all duration-1000 ${state.lvl >= sk.lvl ? 'bg-amber-400 text-black shadow-[0_0_30px_rgba(251,191,36,0.3)]' : 'bg-gray-900 text-slate-700 border border-white/5'}">
-                            <i class="fas ${sk.icon}"></i>
-                        </div>
-                    </div>
-                    <p class="text-xs font-bold mt-5 text-center uppercase tracking-widest ${state.lvl >= sk.lvl ? 'text-white' : 'text-slate-600'}">${sk.n}</p>
+            let newLvl = Math.floor(state.xp / 100) + 1;
+            if(newLvl > state.currentLvl && newLvl <= 4) {
+                state.currentLvl = newLvl;
+                applyLevelChange();
+            }
+        }
+
+        function applyLevelChange() {
+            const levelData = DB.levels[state.currentLvl - 1];
+            document.getElementById('lvl-visual').className = `fas ${levelData.icon}`;
+            document.getElementById('lvl-label').innerText = `Nivel ${state.currentLvl}: ${levelData.name}`;
+            
+            // Desbloqueo visual en selector
+            if(state.currentLvl >= 2) {
+                document.getElementById('btn-atlas').classList.remove('opacity-40');
+                document.getElementById('icon-atlas').innerHTML = '<i class="fas fa-map-marked-alt text-cyan-400"></i>';
+                document.getElementById('txt-atlas').classList.replace('text-slate-400', 'text-white');
+            }
+            if(state.currentLvl >= 3) {
+                document.getElementById('btn-dieta').classList.remove('opacity-40');
+                document.getElementById('icon-dieta').innerHTML = '<i class="fas fa-mortar-pestle text-amber-500"></i>';
+                document.getElementById('txt-dieta').classList.replace('text-slate-400', 'text-white');
+            }
+            alert(`¡Has evolucionado a ${levelData.name}!`);
+        }
+
+        function renderAtlas() {
+            document.getElementById('atlas-list').innerHTML = DB.syndromes.map(s => `
+                <div class="glass-card p-4 border border-white/5">
+                    <h4 class="text-cyan-400 font-bold mb-2">${s.n}</h4>
+                    <p class="text-[10px] text-slate-400 mb-2">${s.s}</p>
+                    <div class="text-[9px] font-bold text-amber-500 uppercase">Acupuntura: ${s.p}</div>
                 </div>
             `).join('');
         }
 
-        // Fix rápido para el error 'd' no definido en Dieta
-        // Cambiar `${d.d}` por `${s.d}` en renderAll() -> Dieta
+        function renderDieta() {
+            document.getElementById('diet-list').innerHTML = DB.syndromes.map(s => `
+                <div class="glass-card p-4 text-center">
+                    <i class="fas fa-leaf text-amber-400 mb-2"></i>
+                    <h5 class="text-[10px] font-bold text-white uppercase">${s.n}</h5>
+                    <p class="text-[9px] text-slate-400 italic">${s.d}</p>
+                </div>
+            `).join('');
+        }
 
-        renderAll();
+        // Inicializar
+        renderQuiz();
     </script>
 </body>
 </html>
