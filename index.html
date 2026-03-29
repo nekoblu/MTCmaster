@@ -3,194 +3,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MTC Pro - Academy</title>
+    <title>MTC Master Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
-        .progress-transition { transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        .answer-card { transition: all 0.2s ease; }
-        .answer-card:active { transform: scale(0.97); }
-        @keyframes bounce-subtle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-        .animate-correct { animation: bounce-subtle 0.5s ease; }
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;500;700&display=swap');
+        
+        :root { --primary: #10b981; --dark: #1e293b; }
+        body { font-family: 'Quicksand', sans-serif; background: #f0f2f5; margin: 0; overflow: hidden; }
+
+        /* Splash Screen Effect */
+        #splash {
+            position: fixed; inset: 0; background: white; z-index: 100;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.5s;
+        }
+        .splash-exit { transform: translateY(-100%); opacity: 0; pointer-events: none; }
+
+        /* Animations */
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .orb-float { animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        /* UI Components */
+        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
+        .tab-content { display: none; height: calc(100vh - 160px); overflow-y: auto; padding-bottom: 80px; }
+        .active-tab { display: block; }
     </style>
 </head>
-<body class="max-w-md mx-auto min-h-screen flex flex-col shadow-2xl bg-white">
+<body class="max-w-md mx-auto bg-white shadow-2xl h-screen relative">
 
-    <!-- TOP BAR: GAMIFICACIÓN -->
-    <header class="p-4 bg-white border-b sticky top-0 z-20">
-        <div class="flex justify-between items-center mb-3">
-            <div>
-                <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Estudiante de MTC</span>
-                <h1 class="text-xl font-bold flex items-center gap-2">
-                    Nivel <span id="lvl-display" class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded">1</span>
-                </h1>
+    <!-- PANTALLA DE PRESENTACIÓN (SPLASH) -->
+    <div id="splash">
+        <div class="orb-float bg-emerald-100 p-8 rounded-full mb-4">
+            <i class="fas fa-yin-yang text-6xl text-emerald-500"></i>
+        </div>
+        <h1 class="text-3xl font-bold text-slate-800 tracking-tight">MTC <span class="text-emerald-500">Master</span></h1>
+        <p class="text-slate-400 mt-2 italic text-sm">El camino del equilibrio</p>
+        <button onclick="startApp()" class="mt-12 bg-emerald-500 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:bg-emerald-600 transition">
+            EMPEZAR
+        </button>
+    </div>
+
+    <!-- HEADER / STATS -->
+    <header class="p-4 glass border-b sticky top-0 z-30">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white font-bold shadow-inner" id="lvl-badge">1</div>
+                <div>
+                    <p class="text-[10px] uppercase font-bold text-slate-400">Progreso Vital</p>
+                    <div class="w-24 h-2 bg-gray-200 rounded-full mt-1">
+                        <div id="xp-bar" class="bg-emerald-500 h-full rounded-full transition-all duration-500" style="width: 10%"></div>
+                    </div>
+                </div>
             </div>
             <div class="flex gap-4">
                 <div class="text-center">
-                    <p class="text-[10px] text-gray-400 uppercase font-bold">Racha</p>
-                    <p class="font-bold text-orange-500"><i class="fas fa-fire"></i> <span id="streak-display">0</span></p>
+                    <p class="text-[10px] font-bold text-orange-400 uppercase">Fuego</p>
+                    <span id="streak" class="font-bold text-slate-700 leading-none">0</span>
                 </div>
                 <div class="text-center">
-                    <p class="text-[10px] text-gray-400 uppercase font-bold">XP Total</p>
-                    <p class="font-bold text-blue-500" id="xp-display">0</p>
+                    <p class="text-[10px] font-bold text-blue-400 uppercase">Orbes</p>
+                    <span id="orb-count" class="font-bold text-slate-700 leading-none">0</span>
                 </div>
             </div>
         </div>
-        <!-- BARRA DE PROGRESO DE NIVEL -->
-        <div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
-            <div id="xp-bar" class="bg-emerald-500 h-full progress-transition" style="width: 0%"></div>
-        </div>
     </header>
 
-    <!-- ÁREA DE CONTENIDO DINÁMICO -->
-    <main id="app-content" class="flex-1 p-5 overflow-y-auto pb-24">
-        <!-- Se inyecta vía JavaScript -->
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="p-4 h-full">
+        <!-- SECCIÓN QUIZ -->
+        <section id="quiz" class="tab-content active-tab fade-in">
+            <div class="bg-slate-50 p-6 rounded-3xl border border-slate-100 shadow-sm text-center mb-6">
+                <p id="q-category" class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-2">Diagnóstico Zang-Fu</p>
+                <h2 id="q-text" class="text-xl font-bold text-slate-800">Cargando desafío...</h2>
+            </div>
+            <div id="q-options" class="grid gap-3"></div>
+        </section>
+
+        <!-- SECCIÓN ATLAS (MERIDIANOS) -->
+        <section id="atlas" class="tab-content fade-in">
+            <h3 class="font-bold text-slate-800 mb-4">Atlas de Meridianos</h3>
+            <div id="meridians-list" class="space-y-3"></div>
+        </section>
+
+        <!-- SECCIÓN DIETA (CONSEJOS) -->
+        <section id="dieta" class="tab-content fade-in">
+            <h3 class="font-bold text-slate-800 mb-4">Dietética Energética</h3>
+            <div id="diet-list" class="grid grid-cols-2 gap-3"></div>
+        </section>
+
+        <!-- SECCIÓN COLECCIÓN (RECOMPENSAS) -->
+        <section id="skills" class="tab-content fade-in">
+            <h3 class="font-bold text-slate-800 mb-2">Tu Alquimia</h3>
+            <p class="text-xs text-slate-400 mb-6">Desbloquea orbes respondiendo correctamente.</p>
+            <div id="collection-grid" class="grid grid-cols-3 gap-4"></div>
+        </section>
     </main>
 
-    <!-- NAVEGACIÓN INFERIOR (Material Design) -->
-    <nav class="fixed bottom-0 max-w-md w-full bg-white border-t flex justify-around py-3 px-2 shadow-[0_-5px_15px_rgba(0,0,0,0.05)]">
-        <button onclick="changeTab('quiz')" class="nav-item flex flex-col items-center gap-1 text-emerald-600">
-            <i class="fas fa-notes-medical text-lg"></i>
-            <span class="text-[10px] font-bold">Diagnóstico</span>
-        </button>
-        <button onclick="changeTab('puntos')" class="nav-item flex flex-col items-center gap-1 text-gray-400">
-            <i class="fas fa-map-marker-alt text-lg"></i>
-            <span class="text-[10px] font-bold">Puntos</span>
-        </button>
-        <button onclick="changeTab('atlas')" class="nav-item flex flex-col items-center gap-1 text-gray-400">
-            <i class="fas fa-book-open text-lg"></i>
-            <span class="text-[10px] font-bold">Atlas</span>
-        </button>
+    <!-- NAVEGACIÓN -->
+    <nav class="fixed bottom-0 max-w-md w-full bg-white border-t flex justify-around p-3 pb-6 z-40">
+        <button onclick="showTab('quiz')" class="text-emerald-500 flex flex-col items-center"><i class="fas fa-brain text-xl"></i><span class="text-[9px] font-bold mt-1">QUIZ</span></button>
+        <button onclick="showTab('atlas')" class="text-slate-400 flex flex-col items-center"><i class="fas fa-map text-xl"></i><span class="text-[9px] font-bold mt-1">ATLAS</span></button>
+        <button onclick="showTab('dieta')" class="text-slate-400 flex flex-col items-center"><i class="fas fa-leaf text-xl"></i><span class="text-[9px] font-bold mt-1">DIETA</span></button>
+        <button onclick="showTab('skills')" class="text-slate-400 flex flex-col items-center"><i class="fas fa-gem text-xl"></i><span class="text-[9px] font-bold mt-1">ORBES</span></button>
     </nav>
 
     <script>
-        // --- BASE DE DATOS MEJORADA ---
-        const DB = {
-            patterns: {
-                "bazo_qi_def": { nombre: "Deficiencia de Qi de Bazo", sintomas: ["Fatiga", "Heces blandas", "Falta de apetito"], color: "emerald" },
-                "higado_qi_est": { nombre: "Estancamiento de Qi de Hígado", sintomas: ["Irritabilidad", "Opresión torácica", "Suspiros"], color: "emerald" },
-                "riñon_yin_def": { nombre: "Deficiencia de Yin de Riñón", sintomas: ["Calor en 5 centros", "Sudor nocturno", "Lengua roja"], color: "emerald" }
-            },
+        // --- DATA STORE ---
+        const DATA = {
             questions: [
-                { sintomas: ["Fatiga crónica", "Heces con tendencia a ser blandas"], correcta: "bazo_qi_def" },
-                { sintomas: ["Sensación de nudo en la garganta", "Irasibilidad", "Distensión abdominal"], correcta: "higado_qi_est" },
-                { sintomas: ["Insomnio", "Sudoración al dormir", "Palmas de manos calientes"], correcta: "riñon_yin_def" }
+                { s: "Cara roja, sed de agua fría, lengua roja con capa amarilla", r: "Calor Pleno", cat: "Ocho Principios" },
+                { s: "Sudoración espontánea, respiración corta, cara pálida", r: "Def. Qi de Pulmón", cat: "Zang-Fu" },
+                { s: "Dolor punzante fijo, lengua violácea, pulso rugoso", r: "Estasis de Sangre", cat: "Patología" }
+            ],
+            meridians: [
+                { n: "Pulmón (P)", p: "11 puntos", e: "Metal", desc: "Gobierna el Qi y la respiración." },
+                { n: "Intestino Grueso (IG)", p: "20 puntos", e: "Metal", desc: "Transporte de desechos." },
+                { n: "Estómago (E)", p: "45 puntos", e: "Tierra", desc: "Mar de los cereales y fluidos." }
+            ],
+            diet: [
+                { t: "Alimentos Fríos", c: "Sandía, Pepino", u: "Para Calor de Estómago" },
+                { t: "Alimentos Calientes", c: "Jengibre, Canela", u: "Para Frío en Útero" },
+                { t: "Sabor Dulce", c: "Arroz, Calabaza", u: "Tonifica el Bazo" }
+            ],
+            orbs: [
+                { n: "Orbe de Madera", color: "bg-green-400", icon: "fa-tree", unlocked: false },
+                { n: "Orbe de Fuego", color: "bg-red-400", icon: "fa-fire", unlocked: false },
+                { n: "Orbe de Tierra", color: "bg-yellow-400", icon: "fa-mountain", unlocked: false }
             ]
         };
 
-        // --- ESTADO DE LA APLICACIÓN ---
-        let state = {
-            xp: 0,
-            lvl: 1,
-            streak: 0,
-            currentIndex: 0,
-            activeTab: 'quiz'
-        };
+        let state = { xp: 0, streak: 0, orbs: 0, currentQ: 0 };
 
-        // --- LÓGICA DE ACTUALIZACIÓN ---
-        function updateUI() {
-            document.getElementById('xp-display').innerText = state.xp;
-            document.getElementById('lvl-display').innerText = state.lvl;
-            document.getElementById('streak-display').innerText = state.streak;
-            
-            // Lógica de nivel (cada 100 XP sube nivel)
-            const progress = (state.xp % 100);
-            document.getElementById('xp-bar').style.width = `${progress}%`;
-            
-            if (state.xp > 0 && state.xp % 100 === 0) {
-                state.lvl++;
-                showConfetti(); 
-            }
+        // --- LÓGICA DE NAVEGACIÓN ---
+        function startApp() {
+            document.getElementById('splash').classList.add('splash-exit');
+            loadQuiz();
+            loadAtlas();
+            loadDiet();
+            renderOrbs();
         }
 
-        function changeTab(tab) {
-            state.activeTab = tab;
-            // Actualizar colores nav
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.replace('text-emerald-600', 'text-gray-400'));
-            event.currentTarget.classList.replace('text-gray-400', 'text-emerald-600');
-            render();
+        function showTab(id) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
+            document.getElementById(id).classList.add('active-tab');
+            document.querySelectorAll('nav button').forEach(b => b.classList.replace('text-emerald-500', 'text-slate-400'));
+            event.currentTarget.classList.replace('text-slate-400', 'text-emerald-500');
         }
 
-        function checkAnswer(key) {
-            const correct = DB.questions[state.currentIndex].correcta;
-            const btn = document.getElementById(`btn-${key}`);
+        // --- LÓGICA DE CONTENIDO ---
+        function loadQuiz() {
+            const q = DATA.questions[state.currentQ];
+            document.getElementById('q-text').innerText = `"${q.s}"`;
+            document.getElementById('q-category').innerText = q.cat;
+            const options = [...new Set(DATA.questions.map(x => x.r))];
             
-            if (key === correct) {
-                btn.classList.add('bg-emerald-500', 'text-white', 'border-emerald-600', 'animate-correct');
-                state.xp += 20;
+            document.getElementById('q-options').innerHTML = options.map(opt => `
+                <button onclick="check('${opt}')" class="bg-white border-2 border-slate-100 p-4 rounded-2xl font-bold text-slate-600 hover:border-emerald-400 transition shadow-sm">
+                    ${opt}
+                </button>
+            `).join('');
+        }
+
+        function check(ans) {
+            if(ans === DATA.questions[state.currentQ].r) {
+                state.xp += 35;
                 state.streak++;
-                setTimeout(() => nextQuestion(), 800);
+                if(state.streak % 3 === 0) unlockRandomOrb();
+                state.currentQ = (state.currentQ + 1) % DATA.questions.length;
+                updateStats();
+                loadQuiz();
             } else {
-                btn.classList.add('bg-red-500', 'text-white', 'border-red-600');
                 state.streak = 0;
-                // Vibración visual simple
-                btn.parentElement.classList.add('shake');
-                setTimeout(() => render(), 800);
-            }
-            updateUI();
-        }
-
-        function nextQuestion() {
-            state.currentIndex = (state.currentIndex + 1) % DB.questions.length;
-            render();
-        }
-
-        // --- RENDERIZADO DE PANTALLAS ---
-        function render() {
-            const container = document.getElementById('app-content');
-            
-            if (state.activeTab === 'quiz') {
-                const q = DB.questions[state.currentIndex];
-                container.innerHTML = `
-                    <div class="animate-in fade-in duration-500">
-                        <div class="bg-emerald-50 p-6 rounded-3xl border border-emerald-100 mb-8 text-center">
-                            <span class="text-emerald-600 font-bold text-xs tracking-widest uppercase">Caso Clínico</span>
-                            <h2 class="text-xl font-bold mt-2 text-slate-800 leading-snug">
-                                "${q.sintomas.join(" • ")}"
-                            </h2>
-                        </div>
-                        <div class="space-y-3">
-                            ${Object.keys(DB.patterns).map(key => `
-                                <button id="btn-${key}" onclick="checkAnswer('${key}')" 
-                                    class="answer-card w-full p-4 rounded-2xl border-2 border-gray-100 text-left font-semibold text-gray-700 hover:border-emerald-300 flex justify-between items-center shadow-sm">
-                                    ${DB.patterns[key].nombre}
-                                    <i class="fas fa-chevron-right text-gray-300"></i>
-                                </button>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
-            } else if (state.activeTab === 'puntos') {
-                container.innerHTML = `
-                    <div class="text-center py-20">
-                        <i class="fas fa-lock text-4xl text-gray-200 mb-4"></i>
-                        <h3 class="font-bold text-gray-400">Contenido Bloqueado</h3>
-                        <p class="text-sm text-gray-400">Alcanza el Nivel 2 para practicar localización de puntos.</p>
-                    </div>
-                `;
-            } else {
-                container.innerHTML = `
-                    <div class="bg-slate-800 p-4 rounded-2xl text-white mb-4">
-                        <h3 class="font-bold mb-2">Canal de Pulmón (Taiyin de la Mano)</h3>
-                        <p class="text-xs opacity-70">11 puntos | Elemento Metal</p>
-                    </div>
-                    <div class="grid grid-cols-2 gap-3 text-xs">
-                        <div class="p-3 border rounded-xl"><b>P7 (Lieque):</b> Punto Luo, apertura de Ren Mai.</div>
-                        <div class="p-3 border rounded-xl"><b>P11 (Shaoshang):</b> Punto Jing-Pozo, calor en garganta.</div>
-                    </div>
-                `;
+                alert("La energía no fluye... intenta de nuevo.");
+                updateStats();
             }
         }
 
-        // Inicialización
-        render();
-        updateUI();
+        function loadAtlas() {
+            document.getElementById('meridians-list').innerHTML = DATA.meridians.map(m => `
+                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+                    <div class="flex justify-between items-center mb-2">
+                        <h4 class="font-bold text-emerald-600">${m.n}</h4>
+                        <span class="text-[10px] bg-slate-100 px-2 py-1 rounded-full font-bold">${m.e}</span>
+                    </div>
+                    <p class="text-xs text-slate-500">${m.desc}</p>
+                    <p class="text-[10px] text-emerald-400 mt-2 font-bold uppercase">${m.p}</p>
+                </div>
+            `).join('');
+        }
 
-        function showConfetti() {
-            // Placeholder para una función de celebración
-            console.log("¡Subiste de nivel!");
+        function loadDiet() {
+            document.getElementById('diet-list').innerHTML = DATA.diet.map(d => `
+                <div class="bg-emerald-50 p-4 rounded-2xl">
+                    <p class="font-bold text-xs text-emerald-700 mb-1">${d.t}</p>
+                    <p class="text-[10px] text-emerald-600 opacity-80 mb-2">${d.c}</p>
+                    <p class="text-[9px] italic text-slate-500 leading-tight">${d.u}</p>
+                </div>
+            `).join('');
+        }
+
+        function unlockRandomOrb() {
+            const locked = DATA.orbs.filter(o => !o.unlocked);
+            if(locked.length > 0) {
+                locked[0].unlocked = true;
+                state.orbs++;
+                renderOrbs();
+                alert(`¡Has manifestado el ${locked[0].n}!`);
+            }
+        }
+
+        function renderOrbs() {
+            document.getElementById('orb-count').innerText = state.orbs;
+            document.getElementById('collection-grid').innerHTML = DATA.orbs.map(o => `
+                <div class="flex flex-col items-center">
+                    <div class="w-16 h-16 rounded-full flex items-center justify-center text-white text-xl shadow-lg ${o.unlocked ? o.color : 'bg-slate-200'} transition-all duration-1000">
+                        <i class="fas ${o.unlocked ? o.icon : 'fa-lock opacity-30'}"></i>
+                    </div>
+                    <p class="text-[8px] font-bold mt-2 uppercase ${o.unlocked ? 'text-slate-700' : 'text-slate-300'}">${o.n}</p>
+                </div>
+            `).join('');
+        }
+
+        function updateStats() {
+            document.getElementById('streak').innerText = state.streak;
+            const lvl = Math.floor(state.xp / 100) + 1;
+            document.getElementById('lvl-badge').innerText = lvl;
+            document.getElementById('xp-bar').style.width = (state.xp % 100) + "%";
         }
     </script>
 </body>
