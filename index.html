@@ -19,156 +19,145 @@
         body { font-family: 'Space Grotesk', sans-serif; background: var(--bg-deep); color: #f1f5f9; margin: 0; overflow: hidden; }
         .ancient { font-family: 'Cinzel', serif; }
 
-        /* --- EL LOGO ORIGINAL: ESTELAS DE 1/3 --- */
-        .logo-container { position: relative; width: 220px; height: 220px; display: flex; align-items: center; justify-content: center; }
+        /* --- LOGO: YIN-YANG + 2 ESTELAS (1/3 CIRCUNFERENCIA) --- */
+        .logo-box { position: relative; width: 200px; height: 200px; display: flex; align-items: center; justify-content: center; }
+        .yin-yang { font-size: 4rem; color: white; filter: drop-shadow(0 0 10px var(--maidi-cyan)); z-index: 5; }
         
-        .yin-yang-core { font-size: 4.5rem; color: white; filter: drop-shadow(0 0 15px var(--maidi-cyan)); z-index: 10; }
-
-        /* Estela Exterior (1/3 de círculo) */
-        .trail-outer {
+        /* Estela Exterior (1/3) */
+        .trail-ext {
             position: absolute; width: 100%; height: 100%;
             border: 3px solid transparent; border-top-color: var(--maidi-cyan);
-            border-radius: 50%; animation: spin-clockwise 3s linear infinite;
+            border-radius: 50%; animation: rotate-cw 3s linear infinite;
         }
-
-        /* Estela Interior (1/3 de círculo) */
-        .trail-inner {
-            position: absolute; width: 70%; height: 70%;
+        /* Estela Interior (1/3) fluyendo al revés */
+        .trail-int {
+            position: absolute; width: 75%; height: 75%;
             border: 3px solid transparent; border-bottom-color: var(--maidi-gold);
-            border-radius: 50%; animation: spin-anticlockwise 2s linear infinite;
+            border-radius: 50%; animation: rotate-ccw 2s linear infinite;
         }
 
-        @keyframes spin-clockwise { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes spin-anticlockwise { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+        @keyframes rotate-cw { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes rotate-ccw { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
 
-        /* --- BOTÓN DE INICIO CON ESTELA EN EL BORDE --- */
-        .btn-start-container {
-            position: relative; width: 100px; height: 100px; margin-top: 40px;
-            display: flex; align-items: center; justify-content: center;
+        /* --- BOTÓN RECTANGULAR NEÓN ESTÁTICO --- */
+        .btn-neon-rect {
+            position: relative; padding: 15px 40px; background: rgba(45, 212, 191, 0.05);
+            border: 1px solid var(--maidi-cyan); color: var(--maidi-cyan);
+            font-weight: bold; letter-spacing: 4px; text-transform: uppercase;
+            box-shadow: 0 0 15px rgba(45, 212, 191, 0.3), inset 0 0 10px rgba(45, 212, 191, 0.2);
+            transition: 0.3s; cursor: pointer;
         }
-        .btn-start-border {
-            position: absolute; inset: 0; border-radius: 50%;
-            border: 2px solid rgba(45, 212, 191, 0.1);
-            border-top: 2px solid var(--maidi-cyan);
-            animation: spin-clockwise 1.5s linear infinite;
-        }
-        .btn-start {
-            width: 80px; height: 80px; border-radius: 50%; background: rgba(45, 212, 191, 0.1);
-            border: 1px solid rgba(45, 212, 191, 0.3); color: var(--maidi-cyan);
-            font-size: 0.7rem; font-weight: bold; letter-spacing: 2px;
-            display: flex; align-items: center; justify-content: center; transition: 0.3s;
-        }
-        .btn-start:active { transform: scale(0.9); background: var(--maidi-cyan); color: black; }
+        .btn-neon-rect:hover { background: var(--maidi-cyan); color: black; box-shadow: 0 0 30px var(--maidi-cyan); }
 
         /* --- NAVEGACIÓN --- */
-        .screen { position: fixed; inset: 0; background: var(--bg-deep); transition: 0.8s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; z-index: 100; }
-        .hidden-screen { opacity: 0; pointer-events: none; transform: translateY(20px); }
+        .screen { position: fixed; inset: 0; background: var(--bg-deep); transition: 0.6s ease-in-out; z-index: 100; display: flex; flex-direction: column; }
+        .hidden-screen { opacity: 0; pointer-events: none; transform: scale(0.95); }
 
         /* --- TARJETAS PABELLÓN --- */
-        .glass-card {
-            background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.05); border-radius: 20px;
-            transition: 0.3s; padding: 20px;
+        .path-card {
+            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 15px;
+            padding: 20px; transition: 0.3s; display: flex; align-items: center; gap: 15px;
         }
-        .glass-card:active { border-color: var(--maidi-cyan); transform: translateX(5px); }
+        .path-card:active { border-color: var(--maidi-cyan); transform: scale(0.98); }
+        .icon-box { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
     </style>
 </head>
 <body class="max-w-md mx-auto h-screen relative border-x border-white/5 shadow-2xl">
 
-    <!-- PANTALLA 1: INICIO (SPLASH) -->
-    <div id="scr-splash" class="screen items-center justify-center">
-        <div class="logo-container mb-8">
-            <div class="trail-outer"></div>
-            <div class="trail-inner"></div>
-            <i class="fas fa-yin-yang yin-yang-core"></i>
+    <!-- PANTALLA 1: INICIO -->
+    <div id="scr-start" class="screen items-center justify-center">
+        <div class="logo-box mb-12">
+            <div class="trail-ext"></div>
+            <div class="trail-int"></div>
+            <i class="fas fa-yin-yang yin-yang"></i>
         </div>
-        
-        <div class="text-center">
-            <h1 class="ancient text-4xl tracking-[10px] text-white">MTC MASTER</h1>
-            <p class="text-[9px] tracking-[5px] text-cyan-500 uppercase mt-2 opacity-60">MAIDI Project</p>
+        <div class="text-center mb-16">
+            <h1 class="ancient text-4xl tracking-[8px] text-white">MTC MASTER</h1>
+            <p class="text-[10px] tracking-[4px] text-cyan-500 uppercase mt-2">MAIDI PROJECT</p>
         </div>
-
-        <div class="btn-start-container" onclick="showScreen('scr-pabellon')">
-            <div class="btn-start-border"></div>
-            <button class="btn-start">INICIO</button>
-        </div>
+        <button onclick="showScreen('scr-pabellon')" class="btn-neon-rect">Entrar</button>
     </div>
 
-    <!-- PANTALLA 2: EL PABELLÓN (INTERMEDIA) -->
-    <div id="scr-pabellon" class="screen hidden-screen p-8 pt-16">
-        <div class="flex justify-between items-end mb-10">
-            <div>
-                <p class="text-[10px] text-cyan-500 font-bold tracking-widest uppercase mb-1">Tu Estado</p>
-                <h2 class="ancient text-3xl text-white">Pabellón</h2>
-            </div>
+    <!-- PANTALLA 2: EL PABELLÓN (INTERMEDIA COMPLETA) -->
+    <div id="scr-pabellon" class="screen hidden-screen p-6 pt-12 overflow-y-auto">
+        <div class="flex justify-between items-center mb-10">
+            <h2 class="ancient text-2xl text-white tracking-widest">El Pabellón</h2>
             <div class="text-right">
-                <p class="text-[10px] text-amber-500 font-bold uppercase">Rango: Iniciado</p>
-                <p class="text-[9px] text-rose-500 animate-pulse uppercase">Qi en Fuga (-5)</p>
+                <p class="text-[9px] text-rose-500 font-bold animate-pulse">QI EN FUGA: -12 XP</p>
+                <p class="text-[10px] text-slate-500">Rango: Semilla de Jade</p>
             </div>
         </div>
 
         <div class="space-y-4">
-            <div onclick="showScreen('scr-game')" class="glass-card flex items-center gap-5 border-l-4 border-cyan-500">
-                <i class="fas fa-scroll text-2xl text-cyan-400"></i>
+            <!-- SENDA DEL GUERRERO (COMBATE) -->
+            <div onclick="showScreen('scr-combat')" class="path-card border-l-4 border-cyan-500">
+                <div class="icon-box bg-cyan-500/10 text-cyan-400"><i class="fas fa-fist-raised"></i></div>
                 <div>
-                    <h4 class="text-sm font-bold uppercase">Misiones Diarias</h4>
-                    <p class="text-[9px] text-slate-500 italic">Entrena tu diagnóstico clínico</p>
+                    <h4 class="text-sm font-bold uppercase tracking-tight">Senda del Guerrero</h4>
+                    <p class="text-[10px] text-slate-500">Desafíos de diagnóstico con tiempo.</p>
                 </div>
             </div>
 
-            <div onclick="showScreen('scr-rank')" class="glass-card flex items-center gap-5 border-l-4 border-amber-500">
-                <i class="fas fa-medal text-2xl text-amber-400"></i>
+            <!-- RANKING GLOBAL -->
+            <div onclick="showScreen('scr-ranking')" class="path-card border-l-4 border-amber-500">
+                <div class="icon-box bg-amber-500/10 text-amber-400"><i class="fas fa-trophy"></i></div>
                 <div>
-                    <h4 class="text-sm font-bold uppercase">Ranking Global</h4>
-                    <p class="text-[9px] text-slate-500 italic">Mídete contra otros maestros</p>
+                    <h4 class="text-sm font-bold uppercase tracking-tight">Altar de Maestros</h4>
+                    <p class="text-[10px] text-slate-500">Ranking global y conexión social.</p>
                 </div>
             </div>
 
-            <div onclick="alert('Cámara de Ecos en desarrollo')" class="glass-card flex items-center gap-5 border-l-4 border-indigo-500">
-                <i class="fas fa-comments text-2xl text-indigo-400"></i>
+            <!-- CÁMARA DE ECOS (CHAT/AMIGOS) -->
+            <div class="path-card border-l-4 border-indigo-500">
+                <div class="icon-box bg-indigo-500/10 text-indigo-400"><i class="fas fa-comments"></i></div>
                 <div>
-                    <h4 class="text-sm font-bold uppercase">Cámara de Ecos</h4>
-                    <p class="text-[9px] text-slate-500 italic">Chat y desafíos entre amigos</p>
+                    <h4 class="text-sm font-bold uppercase tracking-tight">Cámara de Ecos</h4>
+                    <p class="text-[10px] text-slate-500">Chat con amigos y retos directos.</p>
+                </div>
+            </div>
+
+            <!-- ATLAS DE CONSULTA (BIBLIOTECA) -->
+            <div class="path-card border-l-4 border-emerald-500">
+                <div class="icon-box bg-emerald-500/10 text-emerald-400"><i class="fas fa-atlas"></i></div>
+                <div>
+                    <h4 class="text-sm font-bold uppercase tracking-tight">Atlas de Consulta</h4>
+                    <p class="text-[10px] text-slate-500">Biblioteca técnica de síndromes.</p>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- PANTALLA 3: RANKING -->
-    <div id="scr-rank" class="screen hidden-screen p-8 pt-12">
-        <button onclick="showScreen('scr-pabellon')" class="text-slate-400 mb-8"><i class="fas fa-arrow-left mr-2"></i> VOLVER</button>
-        <h2 class="ancient text-2xl mb-6">Altar de Maestros</h2>
-        <div id="rank-content" class="space-y-3 overflow-y-auto">
-            <!-- Ranking real -->
-            <div class="glass-card p-4 flex justify-between items-center border-cyan-500/50 bg-cyan-500/5">
-                <span class="text-xs font-bold text-cyan-400">#12 YOU</span>
-                <span class="text-xs font-mono text-amber-500">1,250 QI</span>
-            </div>
-            <div class="glass-card p-4 flex justify-between items-center opacity-50">
-                <span class="text-xs font-bold text-slate-500">#13 Kenshin</span>
-                <span class="text-xs font-mono text-amber-500">1,100 QI</span>
+    <div id="scr-ranking" class="screen hidden-screen p-6 pt-12">
+        <div class="flex items-center gap-4 mb-8">
+            <button onclick="showScreen('scr-pabellon')" class="text-slate-400 hover:text-white"><i class="fas fa-chevron-left"></i></button>
+            <h2 class="ancient text-xl">Ranking Mundial</h2>
+        </div>
+        <div class="space-y-2">
+            <div class="path-card border-cyan-500/50 bg-cyan-500/5">
+                <span class="text-xs font-bold text-cyan-400">#12 YOU (MAESTRO)</span>
+                <span class="ml-auto text-xs font-mono text-amber-500">1,250 QI</span>
             </div>
         </div>
     </div>
 
-    <!-- PANTALLA 4: JUEGO (TIPO COMBATE) -->
-    <div id="scr-game" class="screen hidden-screen p-6 pt-12">
+    <!-- PANTALLA 4: COMBATE -->
+    <div id="scr-combat" class="screen hidden-screen p-6 pt-12">
         <div class="flex justify-between items-center mb-10">
             <button onclick="showScreen('scr-pabellon')" class="text-slate-500"><i class="fas fa-times"></i></button>
-            <div class="w-2/3 h-1 bg-white/5 rounded-full overflow-hidden">
-                <div id="timer-bar" class="h-full bg-cyan-500 w-full transition-all"></div>
+            <div class="flex-1 mx-8 h-1 bg-white/5 rounded-full overflow-hidden">
+                <div class="h-full bg-cyan-500 w-1/2"></div>
             </div>
-            <p class="text-[10px] font-bold text-amber-500">10s</p>
+            <p class="text-xs font-bold text-amber-500 tracking-tighter">QI: 1,250</p>
         </div>
-
-        <div class="glass-card p-10 text-center mb-8 border-t-2 border-cyan-500">
-            <h3 class="text-lg font-bold italic leading-relaxed">"Lengua roja, sed intensa y pulso rápido."</h3>
+        <div class="path-card p-10 text-center flex-col gap-4 border-t-2 border-cyan-500">
+            <p class="text-[10px] text-cyan-500 tracking-[3px] uppercase">Diagnóstico Flash</p>
+            <h3 class="text-lg font-bold italic">"Cara roja, pulso rápido, aversión al calor."</h3>
         </div>
-
-        <div class="grid gap-3">
-            <button onclick="showScreen('scr-pabellon')" class="glass-card p-4 text-xs font-bold text-left hover:bg-cyan-500/10">SÍNDROME DE CALOR EXCESO</button>
-            <button class="glass-card p-4 text-xs font-bold text-left opacity-60">DEFICIENCIA DE QI</button>
-            <button class="glass-card p-4 text-xs font-bold text-left opacity-60">ESTANCAMIENTO DE SANGRE</button>
+        <div class="mt-8 grid gap-3">
+            <button class="path-card font-bold text-xs uppercase hover:bg-cyan-500/10">Sín. de Calor Exceso</button>
+            <button class="path-card font-bold text-xs uppercase opacity-40">Def. de Yin de Corazón</button>
         </div>
     </div>
 
