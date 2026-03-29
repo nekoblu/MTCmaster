@@ -142,17 +142,73 @@
         ];
 
         const DB = {
-            syndromes: [
-                { id: "s1", n: "Estanc. Qi de Hígado", s: "Irritabilidad, suspiros, opresión en hipocondrios, pulso cuerda.", p: "H3 (Taichong), VB34, PC6.", d: "Mueve el Qi" },
-                { id: "s2", n: "Fuego de Corazón", s: "Insomnio, úlceras bucales rojas, orina oscura, agitación.", p: "C7 (Shenmen), C8, V15.", d: "Drena Fuego" },
-                { id: "s3", n: "Humedad en Bazo", s: "Pesadez, heces pastosas, lengua saburra grasa, falta de sed.", p: "BP9, BP6, E36, VC12.", d: "Transforma Humedad" },
-                { id: "s4", n: "Def. Yin de Riñón", s: "Calor nocturno, dolor lumbar, boca seca, lengua pelada.", p: "R3 (Taixi), R6, V23, BP6.", d: "Nutre Yin" },
-                { id: "s5", n: "Def. Qi de Pulmón", s: "Voz débil, disnea suave al hablar, sudor espontáneo.", p: "P7, P9, V13.", d: "Tonifica Qi" }
-            ],
-            questions_special: [
-                { q: "Pregunta del Oráculo: ¿Qué meridiano gobierna la Mente y el Shen?", a: "Meridiano de Corazón" }
+    // MISIONES SEMANALES: 7 Categorías, 5 preguntas por categoría (Expandible)
+    weekly_vault: {
+        "Lunes": { // MADERA - HÍGADO/VB
+            questions: [
+                { q: "Paciente con cefalea temporal, ojos rojos y sabor amargo. ¿Síndrome?", a: "Fuego de Hígado ascendente" },
+                { q: "Punto Shu-Dorsal del Hígado:", a: "V18 (Ganshu)" },
+                { q: "La lengua en el Estancamiento de Qi de Hígado suele estar:", a: "Normal o bordes ligeramente rojos" },
+                { q: "¿Qué estructura gobierna el Hígado según la MTC?", a: "Los tendones y ligamentos" },
+                { q: "Punto de apertura del cinturón (Dai Mai):", a: "VB41 (Zulinqi)" }
             ]
-        };
+        },
+        "Martes": { // FUEGO - CORAZÓN/ID
+            questions: [
+                { q: "Punto Luo del Corazón:", a: "C5 (Tongli)" },
+                { q: "Punta de la lengua muy roja con puntos rojos. Indica:", a: "Fuego de Corazón" },
+                { q: "¿Cuál es el punto 'Puerta del Espíritu'?", a: "C7 (Shenmen)" },
+                { q: "Síndrome: Palpitaciones, mala memoria y tez pálida.", a: "Deficiencia de Sangre de Corazón" },
+                { q: "El Corazón se manifiesta en el exterior a través de:", a: "La lengua" }
+            ]
+        },
+        "Miércoles": { // ORÁCULO - TEORÍA FUNDAMENTAL
+            questions: [
+                { q: "Ciclo de Control (Ke): ¿Qué elemento controla a la Tierra?", a: "Madera" },
+                { q: "¿Cuál es la función principal del San Jiao?", a: "Paso de fluidos y transformación de Qi" },
+                { q: "El Qi que circula por los meridianos se llama:", a: "Zhong Qi" },
+                { q: "Relación Yin/Yang: El interior es...", a: "Yin" },
+                { q: "¿Qué energía climática se asocia al Otoño?", a: "Sequedad" }
+            ]
+        },
+        "Jueves": { // METAL - PULMÓN/IG
+            questions: [
+                { q: "Punto Mu-Frontal del Pulmón:", a: "P1 (Zhongfu)" },
+                { q: "El Pulmón regula el paso de las aguas hacia:", a: "El Riñón y la Vejiga" },
+                { q: "Saburra blanca, fina y miedo al frío. Indica:", a: "Viento-Frío Externo" },
+                { q: "Punto maestro de la cara y la boca:", a: "IG4 (Hegu)" },
+                { q: "La emoción que daña al Pulmón es:", a: "La tristeza y melancolía" }
+            ]
+        },
+        "Viernes": { // TIERRA - BAZO/E
+            questions: [
+                { q: "¿Quién es el responsable de 'subir el Qi puro'?", a: "El Bazo" },
+                { q: "Punto Mar-He inferior del Estómago:", a: "E36 (Zusanli)" },
+                { q: "Lengua pálida, hinchada con marcas dentales:", a: "Deficiencia de Qi de Bazo" },
+                { q: "El Bazo controla la sangre...", a: "Manteniéndola dentro de los vasos" },
+                { q: "Sabor asociado a la fase Tierra:", a: "Dulce" }
+            ]
+        },
+        "Sábado": { // AGUA - RIÑÓN/V
+            questions: [
+                { q: "El Riñón es el 'Sagrario' de:", a: "El Jing (Esencia)" },
+                { q: "Punto Yuan (Fuente) del Riñón:", a: "R3 (Taixi)" },
+                { q: "Síndrome: Dolor lumbar, rodillas débiles y acúfenos.", a: "Deficiencia de Qi de Riñón" },
+                { q: "¿Qué órgano controla la recepción del Qi respiratorio?", a: "El Riñón" },
+                { q: "Punto de reunión de la Médula:", a: "VB39 (Xuanzhong)" }
+            ]
+        },
+        "Domingo": { // REPASO GENERAL
+            questions: [
+                { q: "Un pulso 'Cuerda' (Xian) es típico de:", a: "Problemas de Hígado o Dolor" },
+                { q: "Punto de cruce de los 3 meridianos Yin del pie:", a: "BP6 (Sanyinjiao)" },
+                { q: "La 'Madre' de la Madera es:", a: "El Agua" },
+                { q: "¿Dónde nace el Qi Original (Yuan Qi)?", a: "Entre los Riñones (Ming Men)" },
+                { q: "La cara roja indica:", a: "Calor" }
+            ]
+        }
+    }
+};
 
         let state = { xp: 0, currentQ: null, timeMode: false };
         let currentDayData;
@@ -182,19 +238,33 @@
         }
 
         // --- MOTOR DE PREGUNTAS (Adaptativo) ---
-        function nextQ() {
-            state.timeMode = Math.random() < 0.3; // 30% de preguntas con tiempo
-            // Prioridad a la misión semanal
-            const dailySyndrome = DB.syndromes.find(s => s.n === currentDayData.q);
-            state.currentQ = dailySyndrome || DB.syndromes[Math.floor(Math.random()*DB.syndromes.length)];
-            
-            document.getElementById('q-mode').innerText = state.timeMode ? "🔥 RETO DE VELOCIDAD" : "Diagnóstico Dojo";
-            document.getElementById('q-text').innerText = state.currentQ.s;
-            
-            const options = [...DB.syndromes].sort(()=>Math.random()-0.5);
-            document.getElementById('q-options').innerHTML = options.map(o => `
-                <button onclick="check('${o.n}')" class="glass p-5 rounded-2xl text-left font-bold text-slate-300 text-sm active:bg-cyan-500/10">${o.n}</button>
-            `).join('');
+       function nextQ() {
+    const today = new Date().toLocaleDateString('es-ES', { weekday: 'long' });
+    const dayKey = today.charAt(0).toUpperCase() + today.slice(1);
+    
+    // Seleccionamos el banco de preguntas del día actual
+    const dayPool = DB.weekly_vault[dayKey] || DB.weekly_vault["Domingo"];
+    const pool = dayPool.questions;
+    
+    // Elegimos una pregunta aleatoria del set diario
+    state.currentQ = pool[Math.floor(Math.random() * pool.length)];
+    
+    // UI Update
+    document.getElementById('q-mode').innerText = `ENFOQUE: ${currentDayData.o}`;
+    document.getElementById('q-text').innerText = state.currentQ.q;
+    
+    // Generar opciones (la correcta + 3 aleatorias de toda la base de datos para dificultar)
+    const allAnswers = Object.values(DB.weekly_vault).flatMap(d => d.questions.map(q => q.a));
+    let options = [state.currentQ.a];
+    while(options.length < 4) {
+        let randomA = allAnswers[Math.floor(Math.random() * allAnswers.length)];
+        if(!options.includes(randomA)) options.push(randomA);
+    }
+    
+    document.getElementById('q-options').innerHTML = options.sort(() => Math.random() - 0.5).map(o => `
+        <button onclick="check('${o}')" class="glass p-5 rounded-2xl text-left font-bold text-slate-300 text-sm active:bg-cyan-500/20 transition-all border border-white/5 hover:border-cyan-500/50">${o}</button>
+    `).join('');
+}
 
             // Lógica de Tiempo
             const timer = document.getElementById('duel-timer');
