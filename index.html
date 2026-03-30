@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MTC Master | MAIDI Elite</title>
+    <title>MTC Master | MAIDI Project</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -23,246 +23,174 @@
             font-family: 'Space Grotesk', sans-serif; 
             background: var(--bg-deep); color: #f1f5f9; margin: 0; overflow: hidden;
             background-image: radial-gradient(circle at 50% 50%, #0f172a 0%, #020617 100%);
-            height: 100vh;
         }
         .ancient { font-family: 'Cinzel', serif; }
 
-        /* --- CAPA DE PARTÍCULAS (FONDO) --- */
-        #particles-bg { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
-        .qi-particle { position: absolute; border-radius: 50%; background: var(--maidi-cyan); opacity: 0.1; animation: float 15s infinite linear; }
-        @keyframes float { from { transform: translateY(100vh); } to { transform: translateY(-10vh); } }
-
-        /* --- ÓRBITAS (REFORZADAS Y ANCLADAS) --- */
-        .logo-wrapper { position: relative; width: 180px; height: 180px; z-index: 10; display: flex; align-items: center; justify-content: center; }
-        .orbit { position: absolute; border-radius: 50%; border: 2px solid transparent; }
-        .orbit-outer { width: 100%; height: 100%; border-top: 3px solid var(--maidi-cyan); animation: rotate-cw 4s linear infinite; filter: drop-shadow(0 0 8px var(--maidi-cyan)); }
-        .orbit-inner { width: 70%; height: 70%; border-bottom: 3px solid var(--maidi-gold); animation: rotate-ccw 3s linear infinite; filter: drop-shadow(0 0 8px var(--maidi-gold)); }
+        /* --- LOGO Y YIN-YANG CON PULSO (PRESERVADO) --- */
+        .logo-container { position: relative; width: 180px; height: 180px; display: flex; align-items: center; justify-content: center; }
+        .orbit-outer::after {
+            content: ""; position: absolute; inset: -4px; border-radius: 50%;
+            border: 4px solid transparent; border-top: 4px solid var(--maidi-cyan);
+            animation: rotate-cw 3s linear infinite; filter: drop-shadow(0 0 10px var(--maidi-cyan));
+        }
+        .orbit-inner::after {
+            content: ""; position: absolute; inset: 4px; border-radius: 50%;
+            border: 4px solid transparent; border-bottom: 4px solid var(--maidi-gold);
+            animation: rotate-ccw 2s linear infinite; filter: drop-shadow(0 0 10px var(--maidi-gold));
+        }
+        .yinyang-pulse { animation: pulse-yin 2s infinite ease-in-out; font-size: 4rem; text-shadow: 0 0 20px rgba(255,255,255,0.4); }
         @keyframes rotate-cw { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes rotate-ccw { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+        @keyframes pulse-yin { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.8; } }
+
+        /* --- BOTÓN NEÓN ORIGINAL (PRESERVADO) --- */
+        .btn-neon {
+            background: #000; border: 2px solid var(--maidi-cyan); color: var(--maidi-cyan);
+            padding: 15px 50px; border-radius: 50px; text-transform: uppercase; letter-spacing: 5px;
+            font-weight: bold; box-shadow: inset 0 0 10px var(--maidi-cyan), 0 0 15px var(--maidi-cyan);
+            transition: 0.4s; cursor: pointer;
+        }
+        .btn-neon:hover { background: var(--maidi-cyan); color: #000; box-shadow: 0 0 40px var(--maidi-cyan); }
 
         /* --- UI GLASS --- */
-        .glass { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; transition: 0.3s; }
-        .glass:active { transform: scale(0.98); border-color: var(--maidi-cyan); }
+        .glass {
+            background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 28px;
+            transition: 0.4s; cursor: pointer;
+        }
+        .glass:hover { border-color: var(--maidi-cyan); transform: translateY(-2px); }
 
         /* --- PANTALLAS --- */
-        .screen { position: absolute; inset: 0; padding: 2rem; display: flex; flex-direction: column; z-index: 20; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); background: transparent; }
-        .hidden-screen { opacity: 0; pointer-events: none; transform: translateY(20px); }
+        .screen { position: fixed; inset: 0; display: flex; flex-direction: column; z-index: 100; transition: 0.5s; background: transparent; }
+        .hidden-screen { opacity: 0; pointer-events: none; transform: scale(1.02); }
 
-        /* --- JUEGO PARES --- */
-        .pair-card { padding: 10px; font-size: 10px; text-align: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
-        .selected { border-color: var(--maidi-gold); background: rgba(251, 191, 36, 0.1); }
-        .matched { opacity: 0.3; pointer-events: none; border-color: var(--maidi-green); }
+        /* --- CAPA CARGA (SABIDURÍA PRESERVADA) --- */
+        #loading-screen { background: #000; z-index: 2000; display: none; align-items: center; justify-content: center; text-align: center; padding: 40px; flex-direction: column; }
 
-        /* --- JUEGO LOCALIZACIÓN --- */
-        .body-silhouette { width: 160px; height: 300px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 80px; margin: 0 auto; position: relative; }
-        .point-marker { position: absolute; width: 16px; height: 16px; background: var(--maidi-red); border-radius: 50%; transform: translate(-50%, -50%); cursor: pointer; box-shadow: 0 0 15px var(--maidi-red); }
+        /* --- BOLA DE QI Y KARMA --- */
+        .qi-ball { width: 50px; height: 50px; background: radial-gradient(circle, var(--maidi-cyan) 0%, transparent 70%); border-radius: 50%; animation: pulse-qi 2s infinite; }
+        @keyframes pulse-qi { 0%, 100% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(1.2); filter: brightness(1.5); } }
+
+        /* --- SILUETA PARA LOCALIZACIÓN --- */
+        .human-silhouette { height: 320px; fill: none; stroke: var(--maidi-cyan); stroke-width: 1.5; filter: drop-shadow(0 0 8px var(--maidi-cyan)); }
     </style>
 </head>
-<body class="max-w-md mx-auto">
+<body class="max-w-md mx-auto h-screen relative">
 
-    <div id="particles-bg"></div>
+    <div id="loading-screen" class="screen">
+        <p id="wisdom-text" class="ancient text-amber-500 text-xl italic mb-8 px-10"></p>
+        <div class="qi-ball"></div>
+        <p class="text-[10px] tracking-[4px] text-cyan-400 mt-6 uppercase opacity-50">Sincronizando Meridianos</p>
+    </div>
 
-    <!-- PANTALLA INICIO -->
     <div id="scr-start" class="screen items-center justify-center">
-        <div class="logo-wrapper mb-12">
-            <div class="orbit orbit-outer"></div>
-            <div class="orbit orbit-inner"></div>
-            <i class="fas fa-yin-yang text-5xl text-white"></i>
+        <div class="logo-container mb-12">
+            <div class="orbit-outer absolute inset-0"></div>
+            <div class="orbit-inner absolute inset-0"></div>
+            <i class="fas fa-yin-yang yinyang-pulse text-white z-50"></i>
         </div>
-        <h1 class="ancient text-4xl tracking-[10px] text-white text-center">MTC MASTER</h1>
-        <p class="text-[10px] text-cyan-400 tracking-[4px] mt-2 mb-16 uppercase">Digital Cultivation</p>
-        <button onclick="showScreen('scr-pabellon')" class="bg-cyan-500 text-slate-900 font-bold px-12 py-4 rounded-full text-xs tracking-widest hover:shadow-[0_0_20px_var(--maidi-cyan)] transition-all">INICIAR VIAJE</button>
+        <h1 class="ancient text-4xl tracking-[10px] text-white">MTC MASTER</h1>
+        <p class="text-[12px] tracking-[6px] text-cyan-400 mt-2 uppercase">MAIDI Project</p>
+        <button onclick="navTo('scr-pabellon')" class="btn-neon mt-16">Entrar</button>
     </div>
 
-    <!-- PABELLÓN PRINCIPAL -->
-    <div id="scr-pabellon" class="screen hidden-screen pt-12 overflow-y-auto">
-        <div class="flex justify-between items-center mb-8">
-            <h2 class="ancient text-2xl text-white">El Templo</h2>
-            <div class="glass px-4 py-1 rounded-full"><span class="text-[10px] text-amber-500 font-bold">1250 QI</span></div>
+    <div id="scr-pabellon" class="screen hidden-screen p-8 pt-16 overflow-y-auto">
+        <div class="flex justify-between items-center mb-10">
+            <div>
+                <h2 class="ancient text-3xl text-white">El Templo</h2>
+                <p class="text-[9px] text-cyan-500 tracking-[3px] uppercase">Pabellón Central</p>
+            </div>
+            <div class="flex flex-col items-end">
+                <span class="text-[10px] text-cyan-400 font-bold">QI: 1200</span>
+                <span class="text-[10px] text-purple-400 font-bold">KARMA: 85</span>
+                <div class="qi-ball mt-2"></div>
+            </div>
         </div>
 
-        <div class="grid grid-cols-1 gap-4 mb-8">
-            <div onclick="showScreen('scr-games')" class="glass p-6 flex items-center gap-6 border-l-4 border-purple-500">
+        <div class="space-y-4 pb-10">
+            <div onclick="navTo('scr-games')" class="glass p-6 flex items-center gap-5 border-l-4 border-purple-500">
                 <i class="fas fa-gamepad text-2xl text-purple-400"></i>
-                <div>
-                    <h4 class="text-xs font-bold text-white uppercase">Cámara de Pruebas</h4>
-                    <p class="text-[9px] text-slate-400 uppercase tracking-tighter">Entrena tus habilidades</p>
-                </div>
+                <h4 class="text-xs font-bold uppercase tracking-widest text-white">Cámara de Pruebas</h4>
             </div>
-            <div onclick="showScreen('scr-social')" class="glass p-6 flex items-center gap-6 border-l-4 border-indigo-500">
+            <div onclick="navTo('scr-atlas')" class="glass p-6 flex items-center gap-5 border-l-4 border-emerald-500">
+                <i class="fas fa-scroll text-2xl text-emerald-400"></i>
+                <h4 class="text-xs font-bold uppercase tracking-widest text-white">Atlas de Jade</h4>
+            </div>
+            <div onclick="navTo('scr-social')" class="glass p-6 flex items-center gap-5 border-l-4 border-indigo-500">
                 <i class="fas fa-users text-2xl text-indigo-400"></i>
-                <div>
-                    <h4 class="text-xs font-bold text-white uppercase">Hermandad</h4>
-                    <p class="text-[9px] text-slate-400 uppercase tracking-tighter">Ranking y Duelos Social</p>
-                </div>
+                <h4 class="text-xs font-bold uppercase tracking-widest text-white">Hermandad Social</h4>
             </div>
-        </div>
-
-        <div class="glass p-5 border-l-4 border-emerald-500 mb-20" onclick="showScreen('scr-atlas')">
-            <div class="flex justify-between items-center">
-                <span class="text-[10px] font-bold text-emerald-400 uppercase">Biblioteca Sagrada</span>
-                <i class="fas fa-scroll text-emerald-500"></i>
+            <div onclick="navTo('scr-medals')" class="glass p-6 flex items-center gap-5 border-l-4 border-amber-500">
+                <i class="fas fa-medal text-2xl text-amber-500"></i>
+                <h4 class="text-xs font-bold uppercase tracking-widest text-white">Coleccionables</h4>
             </div>
         </div>
     </div>
 
-    <!-- SELECTOR DE JUEGOS -->
-    <div id="scr-games" class="screen hidden-screen pt-12">
-        <button onclick="showScreen('scr-pabellon')" class="text-slate-500 text-[10px] font-bold mb-8"><i class="fas fa-arrow-left mr-2"></i> VOLVER</button>
-        <h3 class="ancient text-xl text-white mb-8">Cámara de Pruebas</h3>
-        
-        <div class="space-y-4">
-            <div onclick="initPairs()" class="glass p-5 flex justify-between items-center">
-                <span class="text-xs font-bold uppercase">Enlace de Energías</span>
+    <div id="scr-games" class="screen hidden-screen p-8 pt-16">
+        <button onclick="navTo('scr-pabellon')" class="text-slate-500 text-xs mb-8 uppercase tracking-widest"><i class="fas fa-arrow-left mr-2"></i> Volver</button>
+        <h2 class="ancient text-2xl text-white mb-8">Cámara de Pruebas</h2>
+        <div class="grid grid-cols-1 gap-4">
+            <div onclick="navTo('scr-loc')" class="glass p-5 flex justify-between items-center border-b-2 border-cyan-500">
+                <span class="text-[10px] font-bold text-white uppercase">Localización GPS (Silueta)</span>
+                <i class="fas fa-crosshairs text-cyan-400"></i>
+            </div>
+            <div onclick="navTo('scr-pairs')" class="glass p-5 flex justify-between items-center border-b-2 border-purple-500">
+                <span class="text-[10px] font-bold text-white uppercase">Duelo de Pares</span>
                 <i class="fas fa-link text-purple-400"></i>
             </div>
-            <div onclick="initLoc()" class="glass p-5 flex justify-between items-center">
-                <span class="text-xs font-bold uppercase">Visión Interior (GPS)</span>
-                <i class="fas fa-crosshairs text-rose-400"></i>
-            </div>
         </div>
     </div>
 
-    <!-- JUEGO PARES -->
-    <div id="scr-game-pairs" class="screen hidden-screen pt-12">
-        <button onclick="showScreen('scr-games')" class="text-slate-500 text-[10px] font-bold mb-6 uppercase">Abandonar</button>
-        <div id="pairs-container" class="grid grid-cols-2 gap-3"></div>
-        <p id="pairs-msg" class="text-center mt-8 text-[10px] font-bold text-cyan-400"></p>
-    </div>
-
-    <!-- JUEGO LOCALIZACIÓN -->
-    <div id="scr-game-loc" class="screen hidden-screen pt-12">
-        <button onclick="showScreen('scr-games')" class="text-slate-500 text-[10px] font-bold mb-6 uppercase">Abandonar</button>
-        <h4 id="loc-title" class="text-center text-sm font-bold text-white mb-8">LOCALIZA EL PUNTO</h4>
-        <div class="body-silhouette">
-            <div id="loc-point" class="point-marker" style="display:none" onclick="hitLoc()"></div>
-        </div>
-        <p id="loc-feedback" class="text-center mt-8 text-[10px] font-bold text-rose-400 uppercase"></p>
-    </div>
-
-    <!-- SOCIAL / RANKING -->
-    <div id="scr-social" class="screen hidden-screen pt-12">
-        <button onclick="showScreen('scr-pabellon')" class="text-slate-500 text-[10px] font-bold mb-8 uppercase"><i class="fas fa-arrow-left mr-2"></i> VOLVER</button>
-        <h3 class="ancient text-xl text-white mb-6">Hermandad</h3>
-        <div class="space-y-3">
-            <div class="glass p-4 flex justify-between items-center">
-                <span class="text-[10px] font-bold text-amber-500">#1 Maestro_Zhong</span>
-                <span class="text-[10px] text-white">9,800 QI</span>
-            </div>
-            <div class="glass p-4 flex justify-between items-center border-cyan-500/50">
-                <span class="text-[10px] font-bold text-cyan-400">#12 Tú (Invitado)</span>
-                <span class="text-[10px] text-white">1,250 QI</span>
-            </div>
+    <div id="scr-loc" class="screen hidden-screen p-8 pt-16 items-center">
+        <button onclick="navTo('scr-games')" class="self-start text-slate-500 text-xs mb-8 uppercase tracking-widest">Regresar</button>
+        <h3 id="loc-task" class="ancient text-xl text-white text-center mb-10">Localiza el punto: IG4</h3>
+        <div class="relative">
+            <svg class="human-silhouette" viewBox="0 0 200 500">
+                <circle cx="100" cy="50" r="30" /> <path d="M100,80 L100,250 M100,100 L40,150 M100,100 L160,150 M100,250 L60,450 M100,250 L140,450" /> </svg>
+            <div onclick="alert('¡Punto Encontrado! +20 Qi')" style="position:absolute; top:30%; left:25%; width:20px; height:20px; border:2px solid var(--maidi-red); border-radius:50%; cursor:pointer; box-shadow:0 0 10px var(--maidi-red);"></div>
         </div>
     </div>
 
     <script>
-        // --- NAVEGACIÓN ---
-        function showScreen(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden-screen'));
-            document.getElementById(id).classList.remove('hidden-screen');
-        }
-
-        // --- LÓGICA JUEGO PARES ---
-        const pairsData = [
-            { id: 1, p: "IG4", f: "Cara/Boca" },
-            { id: 2, p: "E36", f: "Energía Vital" },
-            { id: 3, p: "PC6", f: "Ansiedad" },
-            { id: 4, p: "H3", f: "Hígado/Ira" }
+        const wisdoms = [
+            "El médico superior previene la enfermedad, el médico mediocre la cura.",
+            "En la calma total, el Qi fluye como un río de plata.",
+            "La lengua es el espejo donde se refleja el corazón.",
+            "Domina el Yin, abraza el Yang, encuentra el equilibrio."
         ];
-        let pSelected = null, fSelected = null;
 
-        function initPairs() {
-            showScreen('scr-game-pairs');
-            const container = document.getElementById('pairs-container');
-            container.innerHTML = '';
-            document.getElementById('pairs-msg').innerText = "CONECTA LOS MERIDIANOS";
+        // SISTEMA DE NAVEGACIÓN CON SABIDURÍA (AUTOMATIZADO)
+        function navTo(screenId) {
+            const loader = document.getElementById('loading-screen');
+            const wisdomBox = document.getElementById('wisdom-text');
             
-            const points = [...pairsData].sort(() => Math.random() - 0.5);
-            const funcs = [...pairsData].sort(() => Math.random() - 0.5);
+            // 1. Mostrar Proverbio
+            wisdomBox.innerText = `"${wisdoms[Math.floor(Math.random() * wisdoms.length)]}"`;
+            loader.style.display = 'flex';
+            loader.style.opacity = '1';
 
-            points.forEach(d => {
-                const div = document.createElement('div');
-                div.className = 'glass pair-card';
-                div.innerText = d.p;
-                div.onclick = () => {
-                    document.querySelectorAll('.pair-card').forEach(c => c.classList.remove('selected'));
-                    div.classList.add('selected');
-                    pSelected = d;
-                    checkPair();
-                };
-                container.appendChild(div);
-            });
-            funcs.forEach(d => {
-                const div = document.createElement('div');
-                div.className = 'glass pair-card';
-                div.innerText = d.f;
-                div.onclick = () => {
-                    fSelected = d;
-                    div.classList.add('selected');
-                    checkPair();
-                };
-                container.appendChild(div);
-            });
+            // 2. Transición de fondo
+            setTimeout(() => {
+                document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden-screen'));
+                document.getElementById(screenId).classList.remove('hidden-screen');
+                
+                // 3. Ocultar Loader
+                loader.style.opacity = '0';
+                setTimeout(() => { loader.style.display = 'none'; }, 500);
+            }, 1800); // 1.8 segundos de meditación
         }
 
-        function checkPair() {
-            if(pSelected && fSelected) {
-                if(pSelected.id === fSelected.id) {
-                    document.querySelectorAll('.selected').forEach(el => el.classList.add('matched'));
-                    pSelected = null; fSelected = null;
-                } else {
-                    setTimeout(() => {
-                        document.querySelectorAll('.pair-card').forEach(el => el.classList.remove('selected'));
-                        pSelected = null; fSelected = null;
-                    }, 300);
-                }
+        // Partículas Qi permanentes
+        function createQi() {
+            const bg = document.body;
+            for(let i=0; i<15; i++) {
+                const dot = document.createElement('div');
+                dot.style.cssText = `position:fixed; width:2px; height:2px; background:var(--maidi-cyan); left:${Math.random()*100}vw; top:${Math.random()*100}vh; opacity:0.2; pointer-events:none;`;
+                bg.appendChild(dot);
             }
         }
-
-        // --- LÓGICA JUEGO LOCALIZACIÓN ---
-        const locPoints = [
-            { n: "IG4 (Hegu)", t: "40%", l: "20%" },
-            { n: "V1 (Jingming)", t: "15%", l: "48%" },
-            { n: "R3 (Taixi)", t: "85%", l: "35%" }
-        ];
-        let currentLoc = 0;
-
-        function initLoc() {
-            showScreen('scr-game-loc');
-            nextLoc();
-        }
-
-        function nextLoc() {
-            const p = locPoints[currentLoc];
-            document.getElementById('loc-title').innerText = `TOCA: ${p.n}`;
-            const target = document.getElementById('loc-point');
-            target.style.top = p.t;
-            target.style.left = p.l;
-            target.style.display = 'block';
-            target.style.opacity = '0'; // Secreto al inicio
-        }
-
-        function hitLoc() {
-            document.getElementById('loc-point').style.opacity = '1';
-            document.getElementById('loc-feedback').innerText = "¡PUNTO ACTIVADO! +50 QI";
-            setTimeout(() => {
-                currentLoc = (currentLoc + 1) % locPoints.length;
-                document.getElementById('loc-feedback').innerText = "";
-                nextLoc();
-            }, 1200);
-        }
-
-        // --- PARTÍCULAS ---
-        const pContainer = document.getElementById('particles-bg');
-        for(let i=0; i<15; i++) {
-            const p = document.createElement('div');
-            p.className = 'qi-particle';
-            p.style.left = Math.random() * 100 + '%';
-            p.style.width = p.style.height = (Math.random() * 8 + 2) + 'px';
-            p.style.animationDelay = Math.random() * 5 + 's';
-            pContainer.appendChild(p);
-        }
+        createQi();
     </script>
 </body>
 </html>
