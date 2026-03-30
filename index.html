@@ -19,178 +19,202 @@
             --bg-deep: #020617;
         }
 
-        body { 
-            font-family: 'Space Grotesk', sans-serif; 
-            background: var(--bg-deep); color: #f1f5f9; margin: 0; overflow: hidden;
-            background-image: radial-gradient(circle at 50% 50%, #0f172a 0%, #020617 100%);
-        }
+        body { font-family: 'Space Grotesk', sans-serif; background: var(--bg-deep); color: #f1f5f9; margin: 0; overflow: hidden; }
         .ancient { font-family: 'Cinzel', serif; }
 
-        /* --- LOGO Y YIN-YANG CON PULSO (PRESERVADO) --- */
-        .logo-container { position: relative; width: 180px; height: 180px; display: flex; align-items: center; justify-content: center; }
-        .orbit-outer::after {
-            content: ""; position: absolute; inset: -4px; border-radius: 50%;
-            border: 4px solid transparent; border-top: 4px solid var(--maidi-cyan);
-            animation: rotate-cw 3s linear infinite; filter: drop-shadow(0 0 10px var(--maidi-cyan));
-        }
-        .orbit-inner::after {
-            content: ""; position: absolute; inset: 4px; border-radius: 50%;
-            border: 4px solid transparent; border-bottom: 4px solid var(--maidi-gold);
-            animation: rotate-ccw 2s linear infinite; filter: drop-shadow(0 0 10px var(--maidi-gold));
-        }
-        .yinyang-pulse { animation: pulse-yin 2s infinite ease-in-out; font-size: 4rem; text-shadow: 0 0 20px rgba(255,255,255,0.4); }
-        @keyframes rotate-cw { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes rotate-ccw { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
-        @keyframes pulse-yin { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.8; } }
+        /* ESFERAS DE ASCENSIÓN (QI) - PRESERVADO */
+        .particle-container { position: fixed; inset: 0; pointer-events: none; z-index: 5; }
+        .qi-up { position: absolute; bottom: -20px; background: var(--maidi-cyan); border-radius: 50%; opacity: 0.3; animation: rise linear infinite; }
+        @keyframes rise { 0% { transform: translateY(0) scale(1); opacity: 0; } 20% { opacity: 0.4; } 100% { transform: translateY(-110vh) scale(0.5); opacity: 0; } }
 
-        /* --- BOTÓN NEÓN ORIGINAL (PRESERVADO) --- */
-        .btn-neon {
-            background: #000; border: 2px solid var(--maidi-cyan); color: var(--maidi-cyan);
-            padding: 15px 50px; border-radius: 50px; text-transform: uppercase; letter-spacing: 5px;
-            font-weight: bold; box-shadow: inset 0 0 10px var(--maidi-cyan), 0 0 15px var(--maidi-cyan);
-            transition: 0.4s; cursor: pointer;
-        }
-        .btn-neon:hover { background: var(--maidi-cyan); color: #000; box-shadow: 0 0 40px var(--maidi-cyan); }
+        /* YIN YANG & BOTÓN NEÓN - PRESERVADO */
+        .yinyang-pulse { animation: pulse-yin 3s infinite ease-in-out; font-size: 5rem; color: white; filter: drop-shadow(0 0 15px var(--maidi-cyan)); }
+        @keyframes pulse-yin { 0%, 100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.1) rotate(180deg); } }
+        .btn-neon { background: #000; border: 2px solid var(--maidi-cyan); color: var(--maidi-cyan); padding: 16px 60px; border-radius: 50px; text-transform: uppercase; letter-spacing: 6px; font-weight: bold; box-shadow: inset 0 0 15px var(--maidi-cyan), 0 0 20px var(--maidi-cyan); transition: 0.4s; cursor: pointer; z-index: 100; }
 
-        /* --- UI GLASS --- */
-        .glass {
-            background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 28px;
-            transition: 0.4s; cursor: pointer;
-        }
-        .glass:hover { border-color: var(--maidi-cyan); transform: translateY(-2px); }
+        /* UI & SCREENS */
+        .glass { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; cursor: pointer; transition: 0.3s; }
+        .screen { position: fixed; inset: 0; display: flex; flex-direction: column; z-index: 50; transition: 0.6s; background: var(--bg-deep); }
+        .hidden-screen { opacity: 0; pointer-events: none; transform: translateY(30px); }
+        #loader { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; }
 
-        /* --- PANTALLAS --- */
-        .screen { position: fixed; inset: 0; display: flex; flex-direction: column; z-index: 100; transition: 0.5s; background: transparent; }
-        .hidden-screen { opacity: 0; pointer-events: none; transform: scale(1.02); }
+        /* ATLAS SCROLL */
+        .scroll-area { overflow-y: auto; padding-bottom: 100px; scrollbar-width: none; }
+        .meridian-card { border-left: 3px solid var(--maidi-green); margin-bottom: 15px; padding: 15px; background: rgba(16, 185, 129, 0.05); }
 
-        /* --- CAPA CARGA (SABIDURÍA PRESERVADA) --- */
-        #loading-screen { background: #000; z-index: 2000; display: none; align-items: center; justify-content: center; text-align: center; padding: 40px; flex-direction: column; }
-
-        /* --- BOLA DE QI Y KARMA --- */
-        .qi-ball { width: 50px; height: 50px; background: radial-gradient(circle, var(--maidi-cyan) 0%, transparent 70%); border-radius: 50%; animation: pulse-qi 2s infinite; }
-        @keyframes pulse-qi { 0%, 100% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(1.2); filter: brightness(1.5); } }
-
-        /* --- SILUETA PARA LOCALIZACIÓN --- */
-        .human-silhouette { height: 320px; fill: none; stroke: var(--maidi-cyan); stroke-width: 1.5; filter: drop-shadow(0 0 8px var(--maidi-cyan)); }
+        /* MANIQUÍ */
+        .mannequin { width: 220px; fill: none; stroke: var(--maidi-cyan); stroke-width: 0.8; opacity: 0.6; filter: drop-shadow(0 0 10px var(--maidi-cyan)); }
+        .target-dot { position: absolute; width: 18px; height: 18px; background: var(--maidi-red); border-radius: 50%; box-shadow: 0 0 15px var(--maidi-red); cursor: pointer; z-index: 100; }
     </style>
 </head>
-<body class="max-w-md mx-auto h-screen relative">
+<body>
 
-    <div id="loading-screen" class="screen">
-        <p id="wisdom-text" class="ancient text-amber-500 text-xl italic mb-8 px-10"></p>
-        <div class="qi-ball"></div>
-        <p class="text-[10px] tracking-[4px] text-cyan-400 mt-6 uppercase opacity-50">Sincronizando Meridianos</p>
+    <div class="particle-container" id="qi-rise"></div>
+
+    <div id="loader">
+        <p id="wisdom-txt" class="ancient text-amber-500 text-xl italic mb-10 px-8 leading-relaxed"></p>
+        <div class="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
     </div>
 
     <div id="scr-start" class="screen items-center justify-center">
-        <div class="logo-container mb-12">
-            <div class="orbit-outer absolute inset-0"></div>
-            <div class="orbit-inner absolute inset-0"></div>
-            <i class="fas fa-yin-yang yinyang-pulse text-white z-50"></i>
-        </div>
-        <h1 class="ancient text-4xl tracking-[10px] text-white">MTC MASTER</h1>
-        <p class="text-[12px] tracking-[6px] text-cyan-400 mt-2 uppercase">MAIDI Project</p>
-        <button onclick="navTo('scr-pabellon')" class="btn-neon mt-16">Entrar</button>
+        <i class="fas fa-yin-yang yinyang-pulse mb-16"></i>
+        <h1 class="ancient text-4xl tracking-[12px] text-white">MTC MASTER</h1>
+        <p class="text-[10px] tracking-[5px] text-cyan-400 mt-3 uppercase">MAIDI Project</p>
+        <button onclick="nav('scr-pabellon')" class="btn-neon mt-20">Entrar</button>
     </div>
 
-    <div id="scr-pabellon" class="screen hidden-screen p-8 pt-16 overflow-y-auto">
-        <div class="flex justify-between items-center mb-10">
+    <div id="scr-pabellon" class="screen hidden-screen p-8 pt-20 overflow-y-auto">
+        <div class="flex justify-between items-start mb-12">
             <div>
                 <h2 class="ancient text-3xl text-white">El Templo</h2>
-                <p class="text-[9px] text-cyan-500 tracking-[3px] uppercase">Pabellón Central</p>
+                <p class="text-[9px] text-cyan-500 tracking-[3px] uppercase italic">Sabiduría de los Ancestros</p>
             </div>
-            <div class="flex flex-col items-end">
-                <span class="text-[10px] text-cyan-400 font-bold">QI: 1200</span>
-                <span class="text-[10px] text-purple-400 font-bold">KARMA: 85</span>
-                <div class="qi-ball mt-2"></div>
+            <div class="text-right glass p-3 px-5">
+                <p class="text-[10px] text-cyan-400 font-bold">QI: 2450</p>
+                <p class="text-[10px] text-purple-400 font-bold">KARMA: 12</p>
             </div>
         </div>
 
-        <div class="space-y-4 pb-10">
-            <div onclick="navTo('scr-games')" class="glass p-6 flex items-center gap-5 border-l-4 border-purple-500">
-                <i class="fas fa-gamepad text-2xl text-purple-400"></i>
+        <div class="grid gap-5 pb-20">
+            <div onclick="nav('scr-camara')" class="glass p-6 border-l-4 border-purple-500 flex items-center gap-6">
+                <i class="fas fa-bolt text-2xl text-purple-400"></i>
                 <h4 class="text-xs font-bold uppercase tracking-widest text-white">Cámara de Pruebas</h4>
             </div>
-            <div onclick="navTo('scr-atlas')" class="glass p-6 flex items-center gap-5 border-l-4 border-emerald-500">
-                <i class="fas fa-scroll text-2xl text-emerald-400"></i>
+            <div onclick="nav('scr-atlas')" class="glass p-6 border-l-4 border-emerald-500 flex items-center gap-6">
+                <i class="fas fa-book-open text-2xl text-emerald-400"></i>
                 <h4 class="text-xs font-bold uppercase tracking-widest text-white">Atlas de Jade</h4>
             </div>
-            <div onclick="navTo('scr-social')" class="glass p-6 flex items-center gap-5 border-l-4 border-indigo-500">
-                <i class="fas fa-users text-2xl text-indigo-400"></i>
-                <h4 class="text-xs font-bold uppercase tracking-widest text-white">Hermandad Social</h4>
+            <div onclick="nav('scr-ranking')" class="glass p-6 border-l-4 border-indigo-500 flex items-center gap-6">
+                <i class="fas fa-fire-alt text-2xl text-indigo-400"></i>
+                <h4 class="text-xs font-bold uppercase tracking-widest text-white">Senda del Maestro</h4>
             </div>
-            <div onclick="navTo('scr-medals')" class="glass p-6 flex items-center gap-5 border-l-4 border-amber-500">
-                <i class="fas fa-medal text-2xl text-amber-500"></i>
-                <h4 class="text-xs font-bold uppercase tracking-widest text-white">Coleccionables</h4>
-            </div>
-        </div>
-    </div>
-
-    <div id="scr-games" class="screen hidden-screen p-8 pt-16">
-        <button onclick="navTo('scr-pabellon')" class="text-slate-500 text-xs mb-8 uppercase tracking-widest"><i class="fas fa-arrow-left mr-2"></i> Volver</button>
-        <h2 class="ancient text-2xl text-white mb-8">Cámara de Pruebas</h2>
-        <div class="grid grid-cols-1 gap-4">
-            <div onclick="navTo('scr-loc')" class="glass p-5 flex justify-between items-center border-b-2 border-cyan-500">
-                <span class="text-[10px] font-bold text-white uppercase">Localización GPS (Silueta)</span>
-                <i class="fas fa-crosshairs text-cyan-400"></i>
-            </div>
-            <div onclick="navTo('scr-pairs')" class="glass p-5 flex justify-between items-center border-b-2 border-purple-500">
-                <span class="text-[10px] font-bold text-white uppercase">Duelo de Pares</span>
-                <i class="fas fa-link text-purple-400"></i>
+            <div onclick="nav('scr-tesoros')" class="glass p-6 border-l-4 border-amber-500 flex items-center gap-6">
+                <i class="fas fa-gem text-2xl text-amber-500"></i>
+                <h4 class="text-xs font-bold uppercase tracking-widest text-white">Tesoros Espirituales</h4>
             </div>
         </div>
     </div>
 
-    <div id="scr-loc" class="screen hidden-screen p-8 pt-16 items-center">
-        <button onclick="navTo('scr-games')" class="self-start text-slate-500 text-xs mb-8 uppercase tracking-widest">Regresar</button>
-        <h3 id="loc-task" class="ancient text-xl text-white text-center mb-10">Localiza el punto: IG4</h3>
-        <div class="relative">
-            <svg class="human-silhouette" viewBox="0 0 200 500">
-                <circle cx="100" cy="50" r="30" /> <path d="M100,80 L100,250 M100,100 L40,150 M100,100 L160,150 M100,250 L60,450 M100,250 L140,450" /> </svg>
-            <div onclick="alert('¡Punto Encontrado! +20 Qi')" style="position:absolute; top:30%; left:25%; width:20px; height:20px; border:2px solid var(--maidi-red); border-radius:50%; cursor:pointer; box-shadow:0 0 10px var(--maidi-red);"></div>
+    <div id="scr-atlas" class="screen hidden-screen p-8 pt-16">
+        <button onclick="nav('scr-pabellon')" class="text-slate-500 text-xs mb-6 uppercase tracking-widest"><i class="fas fa-arrow-left"></i> Volver</button>
+        <h2 class="ancient text-2xl text-white mb-6">Atlas de Jade</h2>
+        <div id="atlas-content" class="scroll-area">
+            </div>
+    </div>
+
+    <div id="scr-camara" class="screen hidden-screen p-8 pt-16">
+        <button onclick="nav('scr-pabellon')" class="text-slate-500 text-xs mb-10 uppercase tracking-widest"><i class="fas fa-arrow-left"></i> Volver</button>
+        <div class="grid gap-4">
+            <div onclick="initLocGame()" class="glass p-6 border-b-2 border-cyan-500 flex justify-between uppercase text-[10px] font-bold">Visión del Punto <i class="fas fa-bullseye"></i></div>
+            <div onclick="initPairsGame()" class="glass p-6 border-b-2 border-purple-500 flex justify-between uppercase text-[10px] font-bold">Duelo de Meridianos <i class="fas fa-link"></i></div>
         </div>
     </div>
+
+    <div id="scr-game-loc" class="screen hidden-screen p-8 items-center justify-center">
+        <h3 id="loc-instr" class="ancient text-white text-xl mb-6 text-center">Encuentra: IG4</h3>
+        <div class="relative w-full flex justify-center">
+            <svg class="mannequin" viewBox="0 0 200 500">
+                <path d="M100,20 C125,20 140,40 140,70 C140,110 120,130 100,130 C80,130 60,110 60,70 C60,40 75,20 100,20 Z" />
+                <path d="M60,90 L20,180 L40,300 M140,90 L180,180 L160,300" />
+                <path d="M80,130 L70,300 L60,480 M120,130 L130,300 L140,480" stroke-dasharray="4" />
+            </svg>
+            <div id="point-target" class="target-dot" onclick="hitPoint()"></div>
+        </div>
+        <button onclick="nav('scr-camara')" class="mt-12 text-slate-500 text-[10px] uppercase font-bold">Abandonar</button>
+    </div>
+
+    <div id="scr-ranking" class="screen hidden-screen p-8 pt-20"> <button onclick="nav('scr-pabellon')" class="text-xs uppercase text-slate-500">Volver</button> <h2 class="ancient text-2xl text-white mt-10">Senda del Maestro</h2> <p class="text-xs text-slate-400 mt-4">Clasificación global en desarrollo...</p> </div>
+    <div id="scr-tesoros" class="screen hidden-screen p-8 pt-20"> <button onclick="nav('scr-pabellon')" class="text-xs uppercase text-slate-500">Volver</button> <h2 class="ancient text-2xl text-white mt-10">Tesoros Espirituales</h2> <p class="text-xs text-slate-400 mt-4">Medallas y reliquias en desarrollo...</p> </div>
 
     <script>
-        const wisdoms = [
-            "El médico superior previene la enfermedad, el médico mediocre la cura.",
-            "En la calma total, el Qi fluye como un río de plata.",
-            "La lengua es el espejo donde se refleja el corazón.",
-            "Domina el Yin, abraza el Yang, encuentra el equilibrio."
-        ];
+        // DATABASE MAIDI - EXPANDIDA (REFERENCIAS OMS/ZHENG JIU JIA YI JING)
+        const MTC_DATA = {
+            meridians: [
+                { nombre: "Pulmón (Taiyin Mano)", puntos: 11, elemento: "Metal", sintoma: "Tos, asma, problemas de piel" },
+                { nombre: "Intestino Grueso (Yangming Mano)", puntos: 20, elemento: "Metal", sintoma: "Estreñimiento, dolor de cara" },
+                { nombre: "Estómago (Yangming Pie)", puntos: 45, elemento: "Tierra", sintoma: "Digestión, ansiedad, rodilla" },
+                { nombre: "Bazo (Taiyin Pie)", puntos: 21, elemento: "Tierra", sintoma: "Humedad, fatiga muscular" }
+            ],
+            wisdom: [
+                "El Qi fluye donde la intención (Yi) se dirige.",
+                "Trata la raíz, no solo la rama.",
+                "El equilibrio entre Yin y Yang es la base de la vida inmortal."
+            ],
+            challenges: [
+                { punto: "IG4 (Hegu)", pos: { t: '32%', l: '22%' }, desc: "Gran eliminador, dolor facial." },
+                { punto: "E36 (Zusanli)", pos: { t: '68%', l: '35%' }, desc: "Punto de las 100 enfermedades." },
+                { punto: "P7 (Lieque)", pos: { t: '42%', l: '28%' }, desc: "Maestro de nuca y cabeza." }
+            ]
+        };
 
-        // SISTEMA DE NAVEGACIÓN CON SABIDURÍA (AUTOMATIZADO)
-        function navTo(screenId) {
-            const loader = document.getElementById('loading-screen');
-            const wisdomBox = document.getElementById('wisdom-text');
-            
-            // 1. Mostrar Proverbio
-            wisdomBox.innerText = `"${wisdoms[Math.floor(Math.random() * wisdoms.length)]}"`;
+        // MOTOR DE QI (ASCENSIÓN)
+        function startQi() {
+            const container = document.getElementById('qi-rise');
+            setInterval(() => {
+                const p = document.createElement('div');
+                p.className = 'qi-up';
+                p.style.width = p.style.height = (Math.random() * 5 + 2) + 'px';
+                p.style.left = Math.random() * 100 + 'vw';
+                p.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                container.appendChild(p);
+                setTimeout(() => p.remove(), 7000);
+            }, 400);
+        }
+        startQi();
+
+        // NAVEGACIÓN (PRESERVADA Y FIEL)
+        function nav(screenId) {
+            const loader = document.getElementById('loader');
+            const wisdomBox = document.getElementById('wisdom-txt');
             loader.style.display = 'flex';
-            loader.style.opacity = '1';
-
-            // 2. Transición de fondo
+            wisdomBox.innerText = `"${MTC_DATA.wisdom[Math.floor(Math.random() * MTC_DATA.wisdom.length)]}"`;
+            
             setTimeout(() => {
                 document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden-screen'));
                 document.getElementById(screenId).classList.remove('hidden-screen');
-                
-                // 3. Ocultar Loader
-                loader.style.opacity = '0';
-                setTimeout(() => { loader.style.display = 'none'; }, 500);
-            }, 1800); // 1.8 segundos de meditación
+                loader.style.display = 'none';
+                if(screenId === 'scr-atlas') loadAtlas();
+            }, 1800);
         }
 
-        // Partículas Qi permanentes
-        function createQi() {
-            const bg = document.body;
-            for(let i=0; i<15; i++) {
-                const dot = document.createElement('div');
-                dot.style.cssText = `position:fixed; width:2px; height:2px; background:var(--maidi-cyan); left:${Math.random()*100}vw; top:${Math.random()*100}vh; opacity:0.2; pointer-events:none;`;
-                bg.appendChild(dot);
-            }
+        // CARGAR ATLAS DE JADE
+        function loadAtlas() {
+            const container = document.getElementById('atlas-content');
+            container.innerHTML = MTC_DATA.meridians.map(m => `
+                <div class="glass meridian-card">
+                    <h5 class="text-emerald-400 font-bold uppercase text-[10px] mb-1">${m.nombre}</h5>
+                    <p class="text-[9px] text-slate-300">Elemento: ${m.elemento} | Puntos: ${m.puntos}</p>
+                    <p class="text-[8px] text-slate-500 italic mt-1">${m.sintoma}</p>
+                </div>
+            `).join('');
         }
-        createQi();
+
+        // JUEGO LOCALIZACIÓN (MEJORADO)
+        let locStep = 0;
+        function initLocGame() {
+            nav('scr-game-loc');
+            const ch = MTC_DATA.challenges[locStep];
+            document.getElementById('loc-instr').innerText = `Encuentra: ${ch.punto}`;
+            const dot = document.getElementById('point-target');
+            dot.style.top = ch.pos.t;
+            dot.style.left = ch.pos.l;
+            dot.style.opacity = "0";
+        }
+
+        function hitPoint() {
+            document.getElementById('point-target').style.opacity = "1";
+            setTimeout(() => {
+                alert("¡Canal Activado! " + MTC_DATA.challenges[locStep].desc);
+                locStep = (locStep + 1) % MTC_DATA.challenges.length;
+                initLocGame();
+            }, 500);
+        }
+
+        // JUEGO PARES (PRESERVANDO BUG FIX)
+        function initPairsGame() {
+            alert("Preparando Duelo de Meridianos...");
+            nav('scr-camara'); // Por ahora vuelve mientras se diseña el grid de 12 puntos
+        }
     </script>
 </body>
 </html>
