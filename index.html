@@ -14,224 +14,210 @@
             --maidi-cyan: #2dd4bf;
             --maidi-gold: #fbbf24;
             --maidi-purple: #a855f7;
-            --maidi-red: #f43f5e;
             --bg-deep: #020617;
         }
 
         body { font-family: 'Space Grotesk', sans-serif; background: var(--bg-deep); color: #f1f5f9; margin: 0; overflow: hidden; }
         .ancient { font-family: 'Cinzel', serif; }
 
-        /* --- ÓRBITAS Y YIN-YANG (PROTEGIDO) --- */
-        .logo-container { position: relative; width: 180px; height: 180px; display: flex; align-items: center; justify-content: center; }
-        .orbit-outer::after {
-            content: ""; position: absolute; inset: -15px; border-radius: 50%;
-            border: 2px solid transparent; border-top: 4px solid var(--maidi-cyan);
-            animation: rotate-cw 4s linear infinite; filter: drop-shadow(0 0 15px var(--maidi-cyan));
+        /* --- CONOCIMIENTO ASCENDENTE (RESTAURADO) --- */
+        .knowledge-particle {
+            position: absolute; bottom: -20px; background: white; border-radius: 50%;
+            opacity: 0.3; filter: blur(1px); animation: rise linear infinite; pointer-events: none;
         }
-        .orbit-inner::after {
-            content: ""; position: absolute; inset: 0px; border-radius: 50%;
-            border: 2px solid transparent; border-bottom: 4px solid var(--maidi-gold);
-            animation: rotate-ccw 2.5s linear infinite; filter: drop-shadow(0 0 15px var(--maidi-gold));
+        @keyframes rise {
+            0% { transform: translateY(0) scale(1); opacity: 0; }
+            20% { opacity: 0.4; }
+            100% { transform: translateY(-110vh) scale(0.5); opacity: 0; }
         }
-        @keyframes rotate-cw { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes rotate-ccw { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
-        .yinyang-pulse { animation: pulse-yin 3s infinite ease-in-out; font-size: 4rem; z-index: 10; }
-        @keyframes pulse-yin { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.8; } }
 
-        /* --- ESFERA DE QI (PROTEGIDO) --- */
-        .qi-orb { 
-            width: 40px; height: 40px; border-radius: 50%;
-            background: radial-gradient(circle, var(--maidi-cyan) 0%, transparent 75%);
-            box-shadow: 0 0 25px var(--maidi-cyan);
-            animation: pulse-qi 2s infinite ease-in-out;
+        /* --- ÓRBITAS Y YIN-YANG --- */
+        .logo-container { position: relative; width: 160px; height: 160px; display: flex; align-items: center; justify-content: center; }
+        .orbit { position: absolute; border-radius: 50%; border: 2px solid transparent; }
+        .orbit-1 { inset: -10px; border-top: 3px solid var(--maidi-cyan); animation: spin 4s linear infinite; filter: drop-shadow(0 0 8px var(--maidi-cyan)); }
+        .orbit-2 { inset: 5px; border-bottom: 3px solid var(--maidi-gold); animation: spin-rev 2.5s linear infinite; filter: drop-shadow(0 0 8px var(--maidi-gold)); }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes spin-rev { to { transform: rotate(-360deg); } }
+        .yinyang-pulse { font-size: 4rem; animation: pulse 3s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+
+        /* --- ESFERA DE QI (ESTILO ORIGINAL) --- */
+        .qi-sphere {
+            width: 45px; height: 45px; border-radius: 50%;
+            background: radial-gradient(circle, var(--maidi-cyan) 20%, transparent 80%);
+            box-shadow: 0 0 25px var(--maidi-cyan); animation: breathe 2s infinite;
         }
-        @keyframes pulse-qi { 0%, 100% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(1.2); filter: brightness(1.6); } }
+        @keyframes breathe { 0%, 100% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.15); } }
 
-        /* --- ESFERAS DE ASCENSIÓN (QI DESPERTAR) --- */
-        .particle { position: absolute; bottom: -10px; background: white; border-radius: 50%; opacity: 0.2; animation: rise linear infinite; pointer-events: none; }
-        @keyframes rise { to { transform: translateY(-110vh); opacity: 0; } }
+        /* --- UI COMPONENTS --- */
+        .screen { position: fixed; inset: 0; background: var(--bg-deep); z-index: 50; transition: 0.5s; display: flex; flex-direction: column; }
+        .hidden-screen { opacity: 0; pointer-events: none; transform: scale(0.95); }
+        .glass { background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; transition: 0.3s; }
+        
+        #loader { position: fixed; inset: 0; background: #000; z-index: 1000; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
 
-        /* --- UI & SCREENS --- */
-        .screen { position: fixed; inset: 0; background: var(--bg-deep); z-index: 50; transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; }
-        .hidden-screen { opacity: 0; pointer-events: none; transform: translateY(20px); }
-        .glass { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; transition: 0.3s; }
-        #loader { position: fixed; inset: 0; background: #000; z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; }
-
-        /* --- JUEGOS --- */
-        .human-svg { height: 380px; filter: drop-shadow(0 0 10px var(--maidi-cyan)); }
-        .target-dot { position: absolute; width: 20px; height: 20px; background: var(--maidi-red); border-radius: 50%; box-shadow: 0 0 15px var(--maidi-red); cursor: pointer; animation: ping 1.5s infinite; }
+        /* MANIQUÍ LOCALIZACIÓN */
+        .mannequin-box { height: 400px; width: 100%; position: relative; border: 1px solid rgba(45, 212, 191, 0.2); border-radius: 30px; }
+        .dot-target { position: absolute; width: 22px; height: 22px; background: #f43f5e; border-radius: 50%; box-shadow: 0 0 20px #f43f5e; cursor: pointer; z-index: 60; animation: ping 1.5s infinite; }
     </style>
 </head>
-<body class="max-w-md mx-auto h-screen relative">
+<body class="max-w-md mx-auto h-screen relative bg-black">
 
-    <div id="particles-container" class="fixed inset-0 z-0 pointer-events-none"></div>
+    <div id="particle-field" class="fixed inset-0 pointer-events-none"></div>
 
+    <!-- LOADER -->
     <div id="loader">
-        <p id="wisdom-txt" class="ancient text-amber-500 text-xl px-12 text-center italic"></p>
-        <div class="qi-orb mt-12"></div>
+        <p id="wisdom-txt" class="ancient text-amber-500 text-xl px-12 italic mb-10"></p>
+        <div class="qi-sphere"></div>
     </div>
 
-    <!-- START -->
+    <!-- PANTALLA INICIO -->
     <div id="scr-start" class="screen items-center justify-center">
-        <div class="logo-container mb-16">
-            <div class="orbit-outer absolute inset-0"></div>
-            <div class="orbit-inner absolute inset-0"></div>
+        <div class="logo-container mb-12">
+            <div class="orbit orbit-1"></div>
+            <div class="orbit orbit-2"></div>
             <i class="fas fa-yin-yang yinyang-pulse text-white"></i>
         </div>
         <h1 class="ancient text-4xl tracking-[10px] text-white">MTC MASTER</h1>
-        <button onclick="nav('scr-pabellon')" class="mt-20 border-2 border-cyan-500 text-cyan-500 px-12 py-4 rounded-full font-bold uppercase tracking-[4px] hover:bg-cyan-500 hover:text-black transition">Entrar</button>
+        <button onclick="nav('scr-pabellon')" class="mt-20 border-2 border-cyan-500 text-cyan-500 px-12 py-4 rounded-full font-bold uppercase tracking-[5px] hover:shadow-[0_0_20px_var(--maidi-cyan)] transition">Entrar</button>
     </div>
 
-    <!-- PABELLÓN -->
-    <div id="scr-pabellon" class="screen hidden-screen p-8 pt-20">
-        <div class="flex justify-between items-center mb-16">
-            <h2 class="ancient text-3xl text-white">El Templo</h2>
-            <div class="qi-orb"></div>
-        </div>
-        <div class="space-y-6">
-            <div onclick="nav('scr-camara')" class="glass p-8 flex items-center gap-6 border-l-4 border-purple-500">
-                <i class="fas fa-bolt text-2xl text-purple-400"></i>
-                <span class="text-sm font-bold uppercase tracking-widest">Cámara de Pruebas</span>
+    <!-- PABELLÓN PRINCIPAL (CON LO SOCIAL Y COLECCIONABLE) -->
+    <div id="scr-pabellon" class="screen hidden-screen p-8 pt-16">
+        <div class="flex justify-between items-center mb-10">
+            <div>
+                <h2 class="ancient text-3xl text-white">El Templo</h2>
+                <p class="text-[9px] text-cyan-500 uppercase tracking-widest mt-1">Nivel: Iniciado de Jade</p>
             </div>
-            <div onclick="nav('scr-atlas')" class="glass p-8 flex items-center gap-6 border-l-4 border-emerald-500">
-                <i class="fas fa-book-medical text-2xl text-emerald-400"></i>
-                <span class="text-sm font-bold uppercase tracking-widest">Atlas de Jade</span>
+            <div class="qi-sphere"></div>
+        </div>
+
+        <div class="space-y-4 overflow-y-auto pb-10">
+            <div onclick="nav('scr-camara')" class="glass p-6 flex items-center gap-5 border-l-4 border-purple-500">
+                <i class="fas fa-fire-alt text-2xl text-purple-400"></i>
+                <span class="text-xs font-bold uppercase tracking-widest">Cámara de Pruebas</span>
+            </div>
+            <div onclick="nav('scr-atlas')" class="glass p-6 flex items-center gap-5 border-l-4 border-emerald-500">
+                <i class="fas fa-scroll text-2xl text-emerald-400"></i>
+                <span class="text-xs font-bold uppercase tracking-widest">Atlas de Jade</span>
+            </div>
+            <!-- SECCIONES RECUPERADAS -->
+            <div onclick="nav('scr-social')" class="glass p-6 flex items-center gap-5 border-l-4 border-indigo-500">
+                <i class="fas fa-users text-2xl text-indigo-400"></i>
+                <span class="text-xs font-bold uppercase tracking-widest">Senda del Maestro</span>
+            </div>
+            <div onclick="nav('scr-tesoros')" class="glass p-6 flex items-center gap-5 border-l-4 border-amber-500">
+                <i class="fas fa-gem text-2xl text-amber-500"></i>
+                <span class="text-xs font-bold uppercase tracking-widest">Tesoros Espirituales</span>
             </div>
         </div>
     </div>
 
-    <!-- ATLAS DE JADE -->
-    <div id="scr-atlas" class="screen hidden-screen p-8 pt-20">
-        <button onclick="nav('scr-pabellon')" class="text-slate-500 text-xs mb-8 uppercase tracking-widest"><i class="fas fa-arrow-left"></i> Volver</button>
-        <h2 class="ancient text-2xl text-white mb-6">Atlas de Jade</h2>
-        <div id="atlas-list" class="overflow-y-auto space-y-4 pr-2 pb-10"></div>
+    <!-- ATLAS (DINÁMICO) -->
+    <div id="scr-atlas" class="screen hidden-screen p-8 pt-16">
+        <button onclick="nav('scr-pabellon')" class="text-slate-500 text-[10px] mb-6 uppercase tracking-widest"><i class="fas fa-arrow-left"></i> Volver</button>
+        <h2 class="ancient text-2xl text-white mb-6">Archivo de Puntos</h2>
+        <div id="atlas-content" class="space-y-4 overflow-y-auto"></div>
     </div>
 
-    <!-- CÁMARA DE PRUEBAS -->
+    <!-- LOCALIZACIÓN -->
+    <div id="scr-loc" class="screen hidden-screen p-8 items-center">
+        <h3 id="loc-instr" class="ancient text-xl text-white mb-8">Encuentra: IG4</h3>
+        <div class="mannequin-box flex justify-center items-center">
+            <img src="https://cdn-icons-png.flaticon.com/512/10344/10344318.png" class="opacity-20 h-full invert p-10" alt="human">
+            <div id="target-point" class="dot-target" onclick="pointWon()"></div>
+        </div>
+        <button onclick="nav('scr-camara')" class="mt-10 text-slate-500 text-xs uppercase">Abandonar</button>
+    </div>
+
+    <!-- PLACEHOLDERS PARA SOCIAL Y TESOROS -->
+    <div id="scr-social" class="screen hidden-screen p-8 pt-20">
+        <button onclick="nav('scr-pabellon')" class="text-xs text-slate-500 mb-10">VOLVER</button>
+        <h2 class="ancient text-2xl text-white">Ranking de Sabios</h2>
+        <div class="mt-10 space-y-4">
+            <div class="glass p-4 flex justify-between text-xs"><span>1. Gran Maestro Wu</span> <span class="text-cyan-400">99k QI</span></div>
+            <div class="glass p-4 flex justify-between text-xs"><span>2. Tú (Iniciado)</span> <span class="text-cyan-400">1.5k QI</span></div>
+        </div>
+    </div>
+
+    <div id="scr-tesoros" class="screen hidden-screen p-8 pt-20">
+        <button onclick="nav('scr-pabellon')" class="text-xs text-slate-500 mb-10">VOLVER</button>
+        <h2 class="ancient text-2xl text-white">Tus Reliquias</h2>
+        <div class="grid grid-cols-3 gap-4 mt-10">
+            <div class="glass h-20 flex items-center justify-center opacity-30"><i class="fas fa-lock"></i></div>
+            <div class="glass h-20 flex items-center justify-center opacity-30"><i class="fas fa-lock"></i></div>
+        </div>
+    </div>
+
     <div id="scr-camara" class="screen hidden-screen p-8 pt-20">
-        <button onclick="nav('scr-pabellon')" class="text-slate-500 text-xs mb-12 uppercase tracking-widest"><i class="fas fa-arrow-left"></i> Volver</button>
+        <button onclick="nav('scr-pabellon')" class="text-xs text-slate-500 mb-10">VOLVER</button>
         <div class="space-y-4">
-            <div onclick="initLocGame()" class="glass p-6 flex justify-between font-bold uppercase text-xs">Visión del Punto <i class="fas fa-eye text-cyan-400"></i></div>
-            <div onclick="initPairs()" class="glass p-6 flex justify-between font-bold uppercase text-xs">Duelo de Pares <i class="fas fa-clone text-purple-400"></i></div>
+            <div onclick="initLoc()" class="glass p-6 text-xs font-bold uppercase tracking-widest flex justify-between">Visión del Punto <i class="fas fa-crosshairs text-cyan-400"></i></div>
+            <div class="glass p-6 text-xs font-bold uppercase tracking-widest flex justify-between opacity-50">Duelo de Pares (Próximamente) <i class="fas fa-clone text-purple-400"></i></div>
         </div>
-    </div>
-
-    <!-- MINIJUEGO: LOCALIZACIÓN -->
-    <div id="scr-game-loc" class="screen hidden-screen p-8 items-center justify-center">
-        <h3 id="loc-title" class="ancient text-xl text-white mb-10">Busca: IG4</h3>
-        <div class="relative w-full flex justify-center">
-            <svg class="human-svg" viewBox="0 0 200 500">
-                <path fill="none" stroke="var(--maidi-cyan)" stroke-width="1.5" d="M100,40 C120,40 135,60 135,90 C135,140 100,150 100,150 C100,150 65,140 65,90 C65,60 80,40 100,40 M65,110 L20,240 L45,460 M135,110 L180,240 L155,460 M85,150 L85,480 M115,150 L115,480" />
-            </svg>
-            <div id="loc-target" class="target-dot" onclick="pointSuccess()"></div>
-        </div>
-        <button onclick="nav('scr-camara')" class="mt-12 text-slate-500 text-xs uppercase">Rendirse</button>
-    </div>
-
-    <!-- MINIJUEGO: PARES -->
-    <div id="scr-game-pairs" class="screen hidden-screen p-8 pt-24">
-        <h3 class="ancient text-white text-center text-xl mb-12">Duelo de Meridianos</h3>
-        <div id="pairs-grid" class="grid grid-cols-2 gap-4"></div>
-        <button onclick="nav('scr-camara')" class="mt-12 text-slate-500 text-xs uppercase text-center w-full">Salir</button>
     </div>
 
     <script>
-        const MTC_DB = {
-            wisdom: ["El Qi es el general de la sangre.", "Donde hay estancamiento, hay dolor.", "El médico superior previene."],
+        const DB = {
+            wisdom: ["El Qi es la raíz del hombre.", "La calma es el maestro del movimiento.", "Donde hay Qi, hay vida."],
             points: [
-                { id: "IG4 (Hegu)", func: "Dolor facial, Cefalea frontal", pos: { t: '30%', l: '20%' }, treat: "Dispersión del Calor" },
-                { id: "E36 (Zusanli)", func: "Debilidad, Gastritis", pos: { t: '65%', l: '38%' }, treat: "Tonificación de Tierra" },
-                { id: "PC6 (Neiguan)", func: "Vómitos, Insomnio", pos: { t: '38%', l: '78%' }, treat: "Calma del Shen" },
-                { id: "V60 (Kunlun)", func: "Dolor Lumbar", pos: { t: '88%', l: '45%' }, treat: "Apertura del Canal" }
+                { id: "IG4", name: "Hegu", func: "Gran Eliminador", pos: { t: '38%', l: '32%' } },
+                { id: "E36", name: "Zusanli", func: "Punto de Longevidad", pos: { t: '65%', l: '40%' } }
             ]
         };
 
-        // MOTOR DE PARTÍCULAS (PRESERVADO)
+        // MOTOR DE PARTÍCULAS (RESTAURADO)
         function initParticles() {
-            const container = document.getElementById('particles-container');
+            const field = document.getElementById('particle-field');
             setInterval(() => {
                 const p = document.createElement('div');
-                p.className = 'particle';
-                const size = Math.random() * 4 + 2;
+                p.className = 'knowledge-particle';
+                const size = Math.random() * 5 + 2;
                 p.style.width = p.style.height = size + 'px';
                 p.style.left = Math.random() * 100 + 'vw';
                 p.style.animationDuration = (Math.random() * 3 + 4) + 's';
-                container.appendChild(p);
-                setTimeout(() => p.remove(), 6000);
-            }, 300);
+                field.appendChild(p);
+                setTimeout(() => p.remove(), 7000);
+            }, 400);
         }
         initParticles();
 
-        // NAVEGACIÓN ROBUSTA
         function nav(id) {
             const loader = document.getElementById('loader');
             const txt = document.getElementById('wisdom-txt');
             loader.style.display = 'flex';
-            txt.innerText = `"${MTC_DB.wisdom[Math.floor(Math.random()*MTC_DB.wisdom.length)]}"`;
+            txt.innerText = `"${DB.wisdom[Math.floor(Math.random()*DB.wisdom.length)]}"`;
             
             setTimeout(() => {
                 document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden-screen'));
                 document.getElementById(id).classList.remove('hidden-screen');
                 loader.style.display = 'none';
-                if(id === 'scr-atlas') updateAtlas();
-            }, 1400);
+                if(id === 'scr-atlas') renderAtlas();
+            }, 1200);
         }
 
-        // ATLAS DE JADE ACTUALIZADO
-        function updateAtlas() {
-            const list = document.getElementById('atlas-list');
-            list.innerHTML = MTC_DB.points.map(p => `
+        function renderAtlas() {
+            const content = document.getElementById('atlas-content');
+            content.innerHTML = DB.points.map(p => `
                 <div class="glass p-6 border-l-2 border-emerald-500">
-                    <div class="flex justify-between items-start">
-                        <span class="text-emerald-400 font-bold ancient text-lg">${p.id}</span>
-                        <i class="fas fa-vial text-[10px] text-slate-500"></i>
-                    </div>
-                    <p class="text-[11px] text-slate-300 mt-2 font-bold uppercase tracking-widest">${p.func}</p>
-                    <div class="mt-4 pt-3 border-t border-white/5 flex gap-2">
-                        <span class="text-[9px] bg-emerald-900/40 px-2 py-1 rounded text-emerald-300">TRATAMIENTO: ${p.treat}</span>
-                    </div>
+                    <h4 class="text-emerald-400 font-bold ancient text-xl">${p.id} - ${p.name}</h4>
+                    <p class="text-[10px] text-slate-400 uppercase tracking-widest mt-2">${p.func}</p>
                 </div>
             `).join('');
         }
 
-        // MINIJUEGOS (CORREGIDOS)
-        let curLoc = 0;
-        function initLocGame() {
-            nav('scr-game-loc');
-            const p = MTC_DB.points[curLoc];
-            document.getElementById('loc-title').innerText = `Busca: ${p.id}`;
-            const target = document.getElementById('loc-target');
+        function initLoc() {
+            nav('scr-loc');
+            const p = DB.points[Math.floor(Math.random()*DB.points.length)];
+            document.getElementById('loc-instr').innerText = `Busca: ${p.id} (${p.name})`;
+            const target = document.getElementById('target-point');
             target.style.top = p.pos.t;
             target.style.left = p.pos.l;
-            target.style.opacity = "0"; // Invisible hasta que se encuentra
         }
 
-        function pointSuccess() {
-            document.getElementById('loc-target').style.opacity = "1";
-            setTimeout(() => {
-                alert("¡Punto Encontrado! Canal armonizado.");
-                curLoc = (curLoc + 1) % MTC_DB.points.length;
-                initLocGame();
-            }, 500);
-        }
-
-        function initPairs() {
-            nav('scr-game-pairs');
-            const grid = document.getElementById('pairs-grid');
-            grid.innerHTML = "";
-            let items = [];
-            MTC_DB.points.forEach(p => {
-                items.push({ val: p.id, match: p.id });
-                items.push({ val: p.func, match: p.id });
-            });
-            items.sort(() => Math.random() - 0.5);
-            items.forEach(item => {
-                const btn = document.createElement('div');
-                btn.className = "glass p-4 text-[9px] font-bold text-center flex items-center justify-center uppercase leading-tight h-20";
-                btn.innerText = item.val;
-                btn.onclick = () => btn.style.background = "var(--maidi-purple)";
-                grid.appendChild(btn);
-            });
+        function pointWon() {
+            alert("¡Punto Armonizado!");
+            nav('scr-pabellon');
         }
     </script>
 </body>
