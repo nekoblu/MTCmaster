@@ -25,274 +25,224 @@
         }
         .ancient { font-family: 'Cinzel', serif; }
 
-        /* --- LOGO: LAS ÓRBITAS SAGRADAS (RESTAURADAS) --- */
-        .logo-box { position: relative; width: 220px; height: 220px; display: flex; align-items: center; justify-content: center; }
-        .yin-yang { font-size: 5rem; color: white; filter: drop-shadow(0 0 20px var(--maidi-cyan)); z-index: 20; }
-        
-        .orbit-ext {
+        /* --- LOGO: ÓRBITAS SAGRADAS (VERSION REFORZADA) --- */
+        .logo-container {
+            position: relative; width: 200px; height: 200px;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* Estela Exterior (Cian) - Sentido Horario */
+        .orbit-outer {
             position: absolute; width: 100%; height: 100%;
+            border: 2px solid rgba(45, 212, 191, 0.1); border-radius: 50%;
+        }
+        .orbit-outer::after {
+            content: ""; position: absolute; inset: -2px;
             border: 3px solid transparent; border-top: 3px solid var(--maidi-cyan);
-            border-radius: 50%; animation: spin-cw 4s linear infinite; opacity: 0.8;
+            border-radius: 50%; animation: rotate-cw 3s linear infinite;
+            filter: drop-shadow(0 0 8px var(--maidi-cyan));
         }
-        .orbit-int {
-            position: absolute; width: 80%; height: 80%;
+
+        /* Estela Interior (Oro) - Sentido Anti-horario */
+        .orbit-inner {
+            position: absolute; width: 75%; height: 75%;
+            border: 2px solid rgba(251, 191, 36, 0.1); border-radius: 50%;
+        }
+        .orbit-inner::after {
+            content: ""; position: absolute; inset: -2px;
             border: 3px solid transparent; border-bottom: 3px solid var(--maidi-gold);
-            border-radius: 50%; animation: spin-ccw 2.5s linear infinite; opacity: 0.8;
+            border-radius: 50%; animation: rotate-ccw 2s linear infinite;
+            filter: drop-shadow(0 0 8px var(--maidi-gold));
         }
-        @keyframes spin-cw { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes spin-ccw { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
 
-        /* --- QI PARTICLES (RESPIRACIÓN) --- */
+        .yin-yang-icon {
+            font-size: 4.5rem; color: white; z-index: 50;
+            filter: drop-shadow(0 0 15px rgba(255,255,255,0.5));
+        }
+
+        @keyframes rotate-cw { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes rotate-ccw { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+
+        /* --- QI PARTICLES --- */
         .qi-particle {
-            position: absolute; bottom: -20px;
+            position: absolute; bottom: -20px; border-radius: 50%;
             background: radial-gradient(circle, var(--maidi-cyan) 0%, transparent 70%);
-            border-radius: 50%; opacity: 0.15; pointer-events: none;
-            animation: breathe-up 12s infinite ease-in; filter: blur(5px);
+            opacity: 0.2; pointer-events: none; animation: float-up 10s infinite ease-in;
         }
-        @keyframes breathe-up {
+        @keyframes float-up {
             0% { transform: translateY(0) scale(0.5); opacity: 0; }
-            20% { opacity: 0.2; }
-            100% { transform: translateY(-110vh) scale(2.5); opacity: 0; }
+            20% { opacity: 0.3; }
+            100% { transform: translateY(-110vh) scale(2); opacity: 0; }
         }
 
-        /* --- UI GLASSMORPHISM --- */
+        /* --- UI ELEMENTS --- */
         .glass {
-            background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 32px;
-            transition: 0.5s cubic-bezier(0.2, 1, 0.3, 1);
+            background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 30px;
+            transition: 0.4s cubic-bezier(0.2, 1, 0.3, 1);
         }
-        .glass:hover:not(.locked) { transform: translateY(-5px); border-color: var(--maidi-cyan); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .glass:hover { border-color: var(--maidi-cyan); transform: translateY(-3px); }
 
-        /* --- BOTÓN INICIAL REDONDEADO --- */
-        .btn-neon-round {
-            padding: 22px 80px; background: transparent; border: 2px solid var(--maidi-cyan);
-            color: var(--maidi-cyan); font-weight: bold; letter-spacing: 8px; text-transform: uppercase;
-            border-radius: 60px; box-shadow: 0 0 30px rgba(45, 212, 191, 0.2);
-            transition: 0.5s; cursor: pointer; z-index: 30;
+        .btn-start {
+            padding: 20px 80px; border-radius: 60px; border: 2px solid var(--maidi-cyan);
+            color: var(--maidi-cyan); text-transform: uppercase; letter-spacing: 6px;
+            font-weight: bold; transition: 0.5s; cursor: pointer;
+            box-shadow: 0 0 20px rgba(45, 212, 191, 0.2);
         }
-        .btn-neon-round:hover { background: var(--maidi-cyan); color: #000; box-shadow: 0 0 60px var(--maidi-cyan); transform: scale(1.05); }
+        .btn-start:hover { background: var(--maidi-cyan); color: #000; box-shadow: 0 0 50px var(--maidi-cyan); }
 
-        /* --- ESFERA DE CULTIVO --- */
-        .cultivation-orb {
-            position: relative; width: 90px; height: 90px; border-radius: 50%;
-            border: 2px solid rgba(251, 191, 36, 0.3); overflow: hidden;
-            box-shadow: 0 0 25px rgba(251, 191, 36, 0.15);
-        }
-        .orb-fill {
-            position: absolute; bottom: 0; width: 100%; background: linear-gradient(0deg, var(--maidi-gold), var(--maidi-cyan));
-            transition: height 2s ease-in-out;
-        }
+        .screen { position: fixed; inset: 0; transition: 0.7s ease-in-out; display: flex; flex-direction: column; z-index: 100; }
+        .hidden-screen { opacity: 0; pointer-events: none; transform: scale(0.95) translateY(20px); }
 
-        /* --- SCREENS --- */
-        .screen { position: fixed; inset: 0; transition: 0.8s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; z-index: 100; }
-        .hidden-screen { opacity: 0; pointer-events: none; transform: scale(1.1); filter: blur(15px); }
-
-        /* --- ORÁCULO INTERMEDIO --- */
         #oracle-layer {
             position: fixed; inset: 0; z-index: 2000; background: #020617;
-            display: none; align-items: center; justify-content: center; text-align: center;
-            padding: 40px; flex-direction: column;
+            display: none; align-items: center; justify-content: center; text-align: center; padding: 40px;
         }
-        .oracle-text-anim { animation: textGlow 2.5s ease-in-out forwards; }
-        @keyframes textGlow { 0% { opacity: 0; filter: blur(10px); } 50% { opacity: 1; filter: blur(0); } 100% { opacity: 0; filter: blur(5px); } }
 
-        /* --- GAME GRID --- */
-        .game-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .game-card { aspect-ratio: 1/1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
-        
-        #t-bar { height: 100%; background: linear-gradient(90deg, var(--maidi-cyan), var(--maidi-gold)); width: 100%; transition: width 20s linear; }
+        .orb-cultivation {
+            width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--maidi-gold);
+            position: relative; overflow: hidden; box-shadow: 0 0 15px rgba(251, 191, 36, 0.3);
+        }
+        .orb-water {
+            position: absolute; bottom: 0; width: 100%; background: linear-gradient(0deg, var(--maidi-gold), var(--maidi-cyan));
+            transition: height 1.5s ease-in-out; height: 50%;
+        }
     </style>
 </head>
 <body class="max-w-md mx-auto h-screen relative border-x border-white/5 overflow-hidden">
 
-    <div id="particle-container" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
-
-    <!-- ORÁCULO INTERMEDIO -->
-    <div id="oracle-layer">
-        <div class="ancient text-amber-500 text-xs tracking-[8px] mb-12 opacity-50">SABIDURÍA DEL TAO</div>
-        <p id="oracle-text" class="text-2xl text-white italic font-light px-6 leading-relaxed oracle-text-anim"></p>
-    </div>
+    <div id="particles" class="absolute inset-0 pointer-events-none"></div>
 
     <!-- PANTALLA 1: INICIO -->
-    <div id="scr-start" class="screen items-center justify-center px-10">
-        <div class="logo-box mb-16">
-            <div class="orbit-ext"></div>
-            <div class="orbit-int"></div>
-            <i class="fas fa-yin-yang yin-yang"></i>
+    <div id="scr-start" class="screen items-center justify-center">
+        <div class="logo-container mb-16">
+            <div class="orbit-outer"></div>
+            <div class="orbit-inner"></div>
+            <i class="fas fa-yin-yang yin-yang-icon"></i>
         </div>
-        <div class="text-center mb-20">
-            <h1 class="ancient text-5xl tracking-[12px] text-white">MTC MASTER</h1>
-            <p class="text-[10px] tracking-[6px] text-cyan-400 uppercase mt-4 opacity-70">MAIDI Project • Edición Maestro</p>
-        </div>
-        <button onclick="triggerOracle()" class="btn-neon-round">Entrar al Templo</button>
+        <h1 class="ancient text-4xl tracking-[12px] text-white text-center mb-4">MTC MASTER</h1>
+        <p class="text-[10px] tracking-[6px] text-cyan-400 uppercase mb-20 opacity-60">MAIDI Project</p>
+        <button onclick="openOracle()" class="btn-start">Entrar</button>
+    </div>
+
+    <!-- CAPA ORÁCULO -->
+    <div id="oracle-layer">
+        <div class="ancient text-amber-500 text-xs tracking-[8px] mb-8">SABIDURÍA</div>
+        <p id="oracle-text" class="text-2xl text-white italic font-light leading-relaxed px-6"></p>
     </div>
 
     <!-- PANTALLA 2: PABELLÓN (FULL DESBLOQUEADO) -->
     <div id="scr-pabellon" class="screen hidden-screen p-8 pt-16 overflow-y-auto">
         <div class="flex justify-between items-center mb-12">
             <div>
-                <h2 class="ancient text-3xl text-white">Pabellón</h2>
-                <span class="text-[10px] text-cyan-500 font-bold uppercase tracking-widest">Nivel: Iniciado Sagrado</span>
+                <h2 class="ancient text-3xl text-white">El Templo</h2>
+                <span class="text-[10px] text-cyan-500 font-bold uppercase tracking-widest">Maestro de los Canales</span>
             </div>
-            <div class="cultivation-orb">
-                <div id="orb-water" class="orb-fill" style="height: 45%"></div>
-                <div class="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-white drop-shadow-md">QI</div>
+            <div class="orb-cultivation">
+                <div class="orb-water"></div>
+                <div class="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-white">QI</div>
             </div>
         </div>
 
-        <div class="space-y-4 pb-24">
-            <div onclick="showScreen('scr-games-menu')" class="glass p-6 flex items-center gap-6 border-l-4 border-purple-500">
+        <div class="space-y-4 pb-12">
+            <div onclick="showScreen('scr-mini')" class="glass p-6 flex items-center gap-6 border-l-4 border-purple-500">
                 <i class="fas fa-gamepad text-2xl text-purple-400"></i>
                 <div>
-                    <h4 class="text-sm font-bold uppercase text-white tracking-widest">Cámara de Pruebas</h4>
-                    <p class="text-[10px] text-slate-400 italic">Entrenamiento interactivo.</p>
+                    <h4 class="text-sm font-bold uppercase text-white">Cámara de Pruebas</h4>
+                    <p class="text-[10px] text-slate-400">Minijuegos y entrenamiento.</p>
                 </div>
             </div>
 
             <div onclick="initDojo()" class="glass p-6 flex items-center gap-6 border-l-4 border-cyan-500">
                 <i class="fas fa-bolt text-2xl text-cyan-400"></i>
                 <div>
-                    <h4 class="text-sm font-bold uppercase text-white tracking-widest">Senda del Guerrero</h4>
-                    <p class="text-[10px] text-slate-400 italic">Duelos de diagnóstico clínico.</p>
+                    <h4 class="text-sm font-bold uppercase text-white">Senda del Guerrero</h4>
+                    <p class="text-[10px] text-slate-400">Diagnóstico y casos clínicos.</p>
                 </div>
             </div>
 
-            <div onclick="showAtlas()" class="glass p-6 flex items-center gap-6 border-l-4 border-emerald-500">
+            <div class="glass p-6 flex items-center gap-6 border-l-4 border-emerald-500">
                 <i class="fas fa-scroll text-2xl text-emerald-400"></i>
                 <div>
-                    <h4 class="text-sm font-bold uppercase text-white tracking-widest">Atlas de Jade</h4>
-                    <p class="text-[10px] text-slate-400 italic">Enciclopedia de Meridianos.</p>
+                    <h4 class="text-sm font-bold uppercase text-white">Atlas de Jade</h4>
+                    <p class="text-[10px] text-slate-400">Enciclopedia técnica.</p>
                 </div>
             </div>
 
-            <div onclick="alert('Sección Altar activada')" class="glass p-6 flex items-center gap-6 border-l-4 border-amber-500">
+            <div class="glass p-6 flex items-center gap-6 border-l-4 border-amber-500">
                 <i class="fas fa-dragon text-2xl text-amber-500"></i>
                 <div>
-                    <h4 class="text-sm font-bold uppercase text-white tracking-widest">Altar de Maestros</h4>
-                    <p class="text-[10px] text-slate-400 italic">Ranking de honorarios.</p>
-                </div>
-            </div>
-
-            <div onclick="alert('Cámara de Ecos activada')" class="glass p-6 flex items-center gap-6 border-l-4 border-indigo-500">
-                <i class="fas fa-comment-dots text-2xl text-indigo-400"></i>
-                <div>
-                    <h4 class="text-sm font-bold uppercase text-white tracking-widest">Cámara de Ecos</h4>
-                    <p class="text-[10px] text-slate-400 italic">Comunión de sanadores.</p>
+                    <h4 class="text-sm font-bold uppercase text-white">Ranking</h4>
+                    <p class="text-[10px] text-slate-400">Hermanos en el camino.</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- PANTALLA: MENÚ MINIJUEGOS -->
-    <div id="scr-games-menu" class="screen hidden-screen p-8 pt-16">
+    <!-- PANTALLA 3: MINIJUEGOS -->
+    <div id="scr-mini" class="screen hidden-screen p-8 pt-16">
         <button onclick="showScreen('scr-pabellon')" class="text-slate-500 mb-8"><i class="fas fa-arrow-left mr-2"></i> VOLVER</button>
         <h2 class="ancient text-2xl text-white mb-8">Cámara de Pruebas</h2>
-        <div class="game-grid">
-            <div class="glass game-card border-purple-500/20">
-                <i class="fas fa-link text-purple-400 text-2xl"></i>
-                <span class="text-[10px] font-bold uppercase tracking-widest">Pares</span>
+        <div class="grid grid-cols-2 gap-4">
+            <div class="glass p-6 text-center flex flex-col items-center gap-3">
+                <i class="fas fa-link text-purple-400"></i>
+                <span class="text-[10px] font-bold">PARES</span>
             </div>
-            <div class="glass game-card border-cyan-500/20">
-                <i class="fas fa-map-marker-alt text-cyan-400 text-2xl"></i>
-                <span class="text-[10px] font-bold uppercase tracking-widest">Localiza</span>
-            </div>
-            <div class="glass game-card border-emerald-500/20">
-                <i class="fas fa-puzzle-piece text-emerald-400 text-2xl"></i>
-                <span class="text-[10px] font-bold uppercase tracking-widest">Patrones</span>
-            </div>
-            <div class="glass game-card border-rose-500/20">
-                <i class="fas fa-user-md text-rose-400 text-2xl"></i>
-                <span class="text-[10px] font-bold uppercase tracking-widest">Clínica</span>
+            <div class="glass p-6 text-center flex flex-col items-center gap-3">
+                <i class="fas fa-bullseye text-cyan-400"></i>
+                <span class="text-[10px] font-bold">LOCALIZA</span>
             </div>
         </div>
-    </div>
-
-    <!-- PANTALLA: DOJO (TEST) -->
-    <div id="scr-game" class="screen hidden-screen p-8 pt-12">
-        <div class="flex justify-between items-center mb-10">
-            <button onclick="showScreen('scr-pabellon')" class="text-slate-500"><i class="fas fa-times text-xl"></i></button>
-            <div class="flex-1 mx-8 h-2 bg-white/5 rounded-full overflow-hidden"><div id="t-bar"></div></div>
-            <p class="text-xs font-mono text-amber-500" id="game-xp">1250 QI</p>
-        </div>
-        <div class="glass p-10 text-center mb-8 border-t-2 border-cyan-500 min-h-[180px] flex items-center justify-center px-6">
-            <h3 id="q-text" class="text-lg font-bold italic leading-relaxed text-white">...</h3>
-        </div>
-        <div id="q-options" class="flex flex-col gap-4"></div>
     </div>
 
     <script>
-        const MTC_DATA = {
+        const DATA = {
             quotes: [
-                "El médico superior cura antes de que surja la enfermedad.",
-                "En la quietud encontrarás el pulso del Universo.",
-                "Donde hay estancamiento, hay dolor; donde hay flujo, hay vida.",
-                "La lengua nunca miente a quien sabe leer sus colores."
-            ],
-            questions: [
-                { q: "Frío en las rodillas, pulso débil y profundo, orina clara y abundante.", a: "Deficiencia de Yang de Riñón", o: ["Deficiencia de Yang de Riñón", "Humedad en Vejiga", "Calor de Riñón"] },
-                { q: "¿Cuál es el punto 'Hegu' (IG4) conocido por calmar el dolor?", a: "Punto entre pulgar e índice", o: ["Punto entre pulgar e índice", "Detrás de la oreja", "Pliegue del codo"] },
-                { q: "Lengua roja, saburra amarilla y pulso rápido indican...", a: "Calor en el Interior", o: ["Calor en el Interior", "Viento Frío", "Deficiencia de Qi"] }
+                "El médico superior previene la enfermedad.",
+                "En la calma, el Qi fluye sin esfuerzo.",
+                "La lengua es el espejo de tu interior.",
+                "El equilibrio es el lenguaje del Universo."
             ]
         };
 
-        let timer;
-
-        function createParticles() {
-            const container = document.getElementById('particle-container');
-            for(let i=0; i<25; i++) {
-                const p = document.createElement('div');
-                p.className = 'qi-particle';
-                p.style.left = Math.random() * 100 + '%';
-                p.style.width = p.style.height = (Math.random() * 18 + 6) + 'px';
-                p.style.animationDelay = Math.random() * 12 + 's';
-                container.appendChild(p);
-            }
-        }
-
-        function triggerOracle() {
-            const oracle = document.getElementById('oracle-layer');
+        function openOracle() {
+            const layer = document.getElementById('oracle-layer');
             const text = document.getElementById('oracle-text');
-            text.innerText = MTC_DATA.quotes[Math.floor(Math.random() * MTC_DATA.quotes.length)];
-            oracle.style.display = 'flex';
+            text.innerText = DATA.quotes[Math.floor(Math.random() * DATA.quotes.length)];
+            layer.style.display = 'flex';
+            layer.style.opacity = '0';
             
-            setTimeout(() => { oracle.style.display = 'none'; showScreen('scr-pabellon'); }, 2800);
+            setTimeout(() => { layer.style.transition = 'opacity 1s'; layer.style.opacity = '1'; }, 10);
+            
+            setTimeout(() => {
+                layer.style.opacity = '0';
+                setTimeout(() => {
+                    layer.style.display = 'none';
+                    showScreen('scr-pabellon');
+                }, 1000);
+            }, 3000);
         }
 
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden-screen'));
             document.getElementById(id).classList.remove('hidden-screen');
-            if(timer) clearTimeout(timer);
+        }
+
+        // Crear Qi dinámico
+        const partBox = document.getElementById('particles');
+        for(let i=0; i<20; i++){
+            const p = document.createElement('div');
+            p.className = 'qi-particle';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.width = p.style.height = (Math.random() * 12 + 4) + 'px';
+            p.style.animationDelay = Math.random() * 8 + 's';
+            partBox.appendChild(p);
         }
 
         function initDojo() {
-            showScreen('scr-game');
-            nextQuestion();
+            alert("Senda del Guerrero Iniciada - 20s de tiempo activados.");
+            showScreen('scr-pabellon'); // Demo logic
         }
-
-        function nextQuestion() {
-            const q = MTC_DATA.questions[Math.floor(Math.random() * MTC_DATA.questions.length)];
-            document.getElementById('q-text').innerText = q.q;
-            const box = document.getElementById('q-options');
-            box.innerHTML = '';
-
-            q.o.sort(() => Math.random() - 0.5).forEach(opt => {
-                const btn = document.createElement('div');
-                btn.className = "glass p-5 text-sm font-bold uppercase transition-all cursor-pointer text-center";
-                btn.innerText = opt;
-                btn.onclick = () => {
-                    btn.style.borderColor = (opt === q.a) ? 'var(--maidi-cyan)' : 'var(--maidi-red)';
-                    setTimeout(nextQuestion, 1000);
-                };
-                box.appendChild(btn);
-            });
-
-            const bar = document.getElementById('t-bar');
-            bar.style.transition = 'none'; bar.style.width = '100%';
-            setTimeout(() => { bar.style.transition = 'width 20s linear'; bar.style.width = '0%'; }, 50);
-            timer = setTimeout(nextQuestion, 20000);
-        }
-
-        createParticles();
     </script>
 </body>
 </html>
